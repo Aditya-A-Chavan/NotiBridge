@@ -123,10 +123,3 @@ The unpairing process ensures that **only the correct phone can unpair** the sys
 ✅ **Encrypted Communication** → Upgrade to **AES or TLS** for full security  
 
 ---
-
-# **🔹 Next Steps**
-Would you like:
-1️⃣ **Code snippets for pairing & authentication?**  
-2️⃣ **Help with encrypting communication?**  
-
-Let me know what part you want to work on next! 🚀
