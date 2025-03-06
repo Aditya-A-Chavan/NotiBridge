@@ -5,3 +5,50 @@
 5. Desktop app
 6. notification listening (server)
 7. displaying notification (toast notification)
+
+🔹 Phase 1: QR Code-Based Pairing & Authentication
+Goal: Ensure a secure and seamless pairing process before starting notification transmission.
+
+✅ 1. Desktop Generates a Pairing Code
+
+Start a local TCP server and generate a unique pairing token (random key or IP).
+Encode this pairing data as a QR Code.
+✅ 2. Android App Scans the QR Code
+
+Use Android’s Camera API to scan the QR Code.
+Extract IP Address & Authentication Key.
+Store pairing data for future use.
+✅ 3. Establish Secure Connection with Authentication
+
+When connecting, Android sends the authentication key to the desktop.
+The desktop validates it before accepting notifications.
+🔹 Checkpoint:
+At this stage, only authorized devices will be able to send notifications.
+
+🔹 Phase 2: Basic TCP Communication & Notification Capture
+✅ 4. Set Up the TCP Server (Desktop)
+
+Start a TCP server that listens only for paired & authenticated devices.
+✅ 5. Android Notification Listener Service
+
+Capture notifications using the Notification Listener Service.
+✅ 6. Securely Transmit Notifications
+
+Send notification data only if authentication is successful.
+The server rejects unpaired devices.
+🔹 Checkpoint:
+Now, notifications will be sent securely and only from authorized devices.
+
+🔹 Phase 3: Auto-Reconnect & Auto-Start
+✅ 7. Store Authentication & Auto-Reconnect
+
+Save the pairing data and auto-reconnect when both devices are on the same Wi-Fi.
+✅ 8. Run the Desktop App in Background
+
+Auto-start the TCP server on system boot.
+✅ 9. Run Android App in Background
+
+Keep the service running as a Foreground Service to avoid being killed.
+🔹 Checkpoint:
+At this stage, the app will work automatically without user intervention.
+
