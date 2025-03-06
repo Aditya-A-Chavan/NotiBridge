@@ -1,0 +1,7 @@
+1. Mobile app
+2. Raw TCP Socket connection (for complete offline usage and p2p pairing)
+3. QR Code based device pairing
+4. notification listening (Client), transmitting
+5. Desktop app
+6. notification listening (server)
+7. displaying notification (toast notification)
