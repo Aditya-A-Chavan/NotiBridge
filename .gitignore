@@ -1,0 +1,120 @@
+# ========================
+# 🔹 General
+# ========================
+.DS_Store
+Thumbs.db
+
+# ========================
+# 🔹 Python (Desktop App)
+# ========================
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+env/
+
+# PyInstaller (Executable Packaging)
+build/
+dist/
+*.spec
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Logs & Debugging
+logs/
+*.log
+*.tmp
+*.bak
+debug.log
+
+# PyQt (if using)
+*.qrc
+*.ui
+
+# ========================
+# 🔹 Electron.js (Desktop UI - if used)
+# ========================
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+package-lock.json
+*.tsbuildinfo
+
+# Build Files
+dist/
+out/
+*.asar
+
+# Environment Variables
+.env
+.env.local
+.env.production
+.env.development
+
+# ========================
+# 🔹 Android (Mobile App)
+# ========================
+# Gradle Files
+.gradle/
+build/
+
+# Android Studio
+.idea/
+*.iml
+*.hprof
+local.properties
+
+# Compiled Binaries
+*.apk
+*.aab
+*.dex
+*.o
+*.so
+
+# Keystore Files (Security)
+*.keystore
+*.jks
+
+# Dependency Caches
+.cxx/
+.externalNativeBuild/
+captures/
+outputs/
+test-results/
+test-output/
+
+# Emulator & Device Data
+*.avd/
+*.lock
+*.pid
+*.ndk/
+
+# Firebase & Google Services
+google-services.json
+app/google-services.json
+
+# ========================
+# 🔹 WebSockets & Other Future Tech
+# ========================
+*.pem
+*.crt
+*.key
+node_modules/
+yarn.lock
+
+# ========================
+# 🔹 Miscellaneous
+# ========================
+# JetBrains (IDEA, PyCharm)
+.idea/
+.vscode/
+*.swp
+*.swo
+*.swn
