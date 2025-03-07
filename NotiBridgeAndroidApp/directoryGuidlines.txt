@@ -1,0 +1,107 @@
+1️⃣ authentication/
+📌 Handles device pairing and authentication logic.
+
+Includes models, storage, business logic (repository), ViewModel, and UI screens related to pairing.
+
+
+📁 authentication/model/
+
+
+AuthToken.kt → Stores authentication tokens (if used for security).
+PairingInfo.kt → Stores pairing-related details (e.g., PC name, IP, pairing time).
+
+
+📁 authentication/storage/
+PrefsManager.kt → Manages user preferences using Jetpack DataStore:
+Stores pairing status (isPaired flag).
+Saves the PC’s IP address for reconnection.
+(If needed) Stores authentication token for secure communication.
+
+
+📁 authentication/repository/
+PairingRepository.kt → Handles pairing logic, including:
+Saving & retrieving pairing info from PrefsManager.kt.
+Verifying pairing status when the app starts.
+Handling unpairing logic when the user disconnects.
+
+
+📁 authentication/viewmodel/
+PairingViewModel.kt → Controls UI state & business logic for pairing:
+Checks if the app is paired or not.
+Manages QR code scanning and handles results.
+Updates UI when pairing is successful or failed.
+
+
+📁 authentication/ui/
+QRScannerScreen.kt → Handles QR code scanning for pairing.
+PairingScreen.kt → UI for pairing flow (shows scanned data & connects).
+PairingSuccessScreen.kt → Displays a success message after pairing.
+UnpairScreen.kt → Allows users to disconnect/unpair their device.
+
+
+
+
+2️⃣ network/
+📌 Handles communication between the Android app and the PC.
+
+This includes sending pairing requests, messages, and notifications over TCP/WebSocket.
+
+
+📁 network/
+NetworkManager.kt → Manages TCP/WebSocket connections to the PC.
+Sends pairing request to PC after scanning QR code.
+Sends notification data to PC (future implementation).
+WebSocketClient.kt → Handles WebSocket-based communication (if used instead of raw TCP).
+
+
+
+3️⃣ storage/
+📌 Handles data storage & preferences management.
+
+Used for saving persistent app settings like pairing state.
+📁 storage/
+(Already inside authentication/storage/ → PrefsManager.kt)
+
+
+
+
+4️⃣ utils/
+📌 Contains helper functions and constants used across the app.
+
+📁 utils/
+QRScanner.kt → Utility functions for QR code scanning.
+Constants.kt → Stores global constants, such as:
+Default ports (8080, 9000, etc.).
+Pairing timeout values.
+Fixed API endpoints (if needed).
+
+
+
+
+5️⃣ ui/main/
+📌 Handles the main entry point of the app.
+
+📁 ui/main/
+MainActivity.kt → The entry point of the app, updated to:
+Check if pairing is already done.
+Show "Connected" instead of QR scanner if paired.
+If not paired, redirect to PairingScreen.kt.
+
+
+
+
+File Name	                Description
+AuthToken.kt	            Stores authentication tokens (if needed for secure pairing).
+PairingInfo.kt	            Stores pairing details like PC name, IP, and pairing time.
+PrefsManager.kt	            Saves pairing state using Jetpack DataStore.
+PairingRepository.kt    	Handles pairing logic & communicates with PrefsManager.kt.
+PairingViewModel.kt	        Manages pairing UI state and business logic.
+QRScannerScreen.kt	        QR code scanning UI & logic.
+PairingScreen.kt	        Handles device pairing UI and connection.
+PairingSuccessScreen.kt	    Shows pairing success message.
+UnpairScreen.kt	            Allows users to disconnect/unpair their device.
+NetworkManager.kt	        Manages TCP/WebSocket communication.
+WebSocketClient.kt	        WebSocket-based communication (if used).
+QRScanner.kt	            Utility functions for QR scanning.
+Constants.kt	            Stores global constants (ports, timeouts, etc.).
+MainActivity.kt	            Checks pairing state and loads appropriate UI (Connected/QR Scanner).

@@ -1,4 +1,4 @@
-package com.example.notibridge
+package com.example.notibridge.ui.main
 
 import android.content.Intent
 import android.os.Build
