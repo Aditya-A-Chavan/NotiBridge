@@ -59,6 +59,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.security.crypto.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -67,5 +68,23 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.zxing.android.embedded)
-    implementation("com.google.zxing:core:3.5.2")
+    implementation(libs.core)
+    implementation(libs.json)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation (libs.ui) // Replace with the latest version
+    implementation(libs.androidx.material) // Replace with the latest version
+    implementation(libs.ui.tooling.preview) // Replace with the latest version
+    implementation (libs.androidx.activity.compose.v130) // Replace with the latest version
+
+    // ViewModel and LiveData for Compose
+    implementation (libs.androidx.lifecycle.viewmodel.compose) // Replace with the latest version
+
+    // Other dependencies
+    implementation(libs.androidx.lifecycle.runtime.ktx.v260)
+    implementation(libs.androidx.security.crypto.ktx.v110alpha06)
+    implementation(libs.jmdns)
+    implementation(libs.gson)
+
 }
