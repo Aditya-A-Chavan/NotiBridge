@@ -36,6 +36,8 @@ class PairingViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
+
+
     fun unpairDevice() {
         viewModelScope.launch {
             repository.unpairDevice()
@@ -43,19 +45,19 @@ class PairingViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    @Composable
-    fun requestHandling(conncted: Boolean, paired: Boolean){
-        if(conncted && paired){
-            PairingSuccessScreen(pairingViewModel)
-        }
-        else if(paired && !conncted){
-            repository.startConnection()
-        }
-        else if(!paired && !conncted){
-            repository.initiatePairing()
-        }
-        else{
-            println("how can it be NOT paired but CONNECTED????")
-        }
-    }
+//    @Composable
+//    fun requestHandling(conncted: Boolean, paired: Boolean){
+//        if(conncted && paired){
+//            PairingSuccessScreen(pairingViewModel)
+//        }
+//        else if(paired && !conncted){
+//            repository.startConnection()
+//        }
+//        else if(!paired && !conncted){
+//            repository.initiatePairing()
+//        }
+//        else{
+//            println("how can it be NOT paired but CONNECTED????")
+//        }
+//    }
 }
