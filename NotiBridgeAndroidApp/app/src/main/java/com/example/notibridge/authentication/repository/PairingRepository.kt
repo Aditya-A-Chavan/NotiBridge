@@ -1,80 +1,93 @@
 package com.example.notibridge.authentication.repository
 
-import android.content.Context
-import android.util.Log
 import com.example.notibridge.authentication.storage.PrefsManager
 import com.example.notibridge.authentication.storage.SecureStore
-import com.example.notibridge.network.mdns.MdnsService
+import com.example.notibridge.network.NetworkManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.io.PrintWriter
-import java.net.Socket
+import java.util.UUID
 
-class PairingRepository(private val context: Context) {
 
-    private val prefsManager = PrefsManager(context)
-    private val secureStore = SecureStore(context)
-    private val mdnsService = MdnsService(context)
+class PairingRepository(
+    private val secureStore: SecureStore,
+    private val prefsManager: PrefsManager,
+    private val networkManager: NetworkManager // TODO: implement network manager
+){
 
-    suspend fun initiatePairing(pairingKey: String, deviceId: String, onPairingComplete: (Boolean) -> Unit) {
-        withContext(Dispatchers.IO) {
-            mdnsService.discoverDesktop(deviceId) { hostname, ip ->
-                Log.d("PairingRepository", "Attempting to pair with $hostname at $ip")
+    //Return Class for whenever Pairing Repository is called
+    data class PairingResult(val success: Boolean, val errorMessage: String = "")
 
-                try {
-                    // Save pairing details securely
-                    secureStore.saveSecureData("pairing_key", pairingKey)
-                    secureStore.saveSecureData("phone_id", generatePhoneId())
+    fun generatePhoneId(): String {
+        val phoneId = UUID.randomUUID().toString()
+        println(phoneId)
+        return phoneId
+    }
 
-                    // Save pairing data in Preferences
-                    prefsManager.savePairingData(deviceId, hostname)
+//    suspend fun pairWithDevice(pairingKey: String, deviceId: String, phoneId: String, hostname: String){
+//        return withContext(Dispatchers.IO){
+//            val requestData = mapOf(
+//                "request" to "PAIR",
+//                "device_id" to deviceId,
+//                "phone_id" to phoneId,
+//                "pairing_key" to pairingKey
+//            )
+//
+//            val response = networkManager.sendRequest(hostname, requestData)
+//
+//            if(response["status"] == "SUCCESS"){
+//                secureStore.savePhoneId(phoneId)
+//                secureStore.savePairingKey(pairingKey)
+//                prefsManager.saveDeviceId(deviceId)
+//                prefsManager.saveHostname(hostname)
+//
+//                PairingResult(success = true)
+//            }else{
+//                PairingResult(success = false, errorMessage = response["message"] ?: "pairing failed") //default to pairing failed
+//            }
+//        }
+//    }
 
-                    // Send pairing request
-                    val success = sendPairingRequest(ip, 5000, pairingKey)
+    suspend fun pairWithDevice(pairingKey: String, deviceId: String, phoneId: String, hostname: String): Boolean {
+        val requestData = mapOf(
+               "request" to "PAIR",
+                "device_id" to deviceId,
+                "phone_id" to phoneId,
+                "pairing_key" to pairingKey
+        )
+        val response = networkManager.sendRequest(hostname, requestData)
 
-                    withContext(Dispatchers.Main) {
-                        onPairingComplete(success)
-                    }
-                } catch (e: Exception) {
-                    Log.e("PairingRepository", "Pairing failed: ${e.message}")
-                    withContext(Dispatchers.Main) {
-                        onPairingComplete(false)
-                    }
-                }
+        if(response["status"] == "SUCCESS") {
+            secureStore.savePhoneId(phoneId)
+            secureStore.savePairingKey(pairingKey)
+            prefsManager.saveDeviceId(deviceId)
+            prefsManager.saveHostname(hostname)
+
+            return true
+        }else{
+            return false
+        }
+    }
+
+    suspend fun unpairDevice(phoneId: String): PairingResult{
+        return withContext(Dispatchers.IO){
+            val hostname = prefsManager.getHostname() ?: return@withContext PairingResult(false, "No Paired Device to Unpair")
+
+            val requestData = mapOf(
+                "request" to "UNPAIR",
+                "phone_id" to phoneId
+            )
+
+            val response = networkManager.sendRequest(hostname, requestData)
+
+            return@withContext if(response["status"] == "SUCCESS"){
+                secureStore.clearData()
+                prefsManager.clearData()
+                PairingResult(success = true)
+            }else{
+                PairingResult(success = false)
             }
         }
     }
-
-    private fun sendPairingRequest(ip: String, port: Int, pairingKey: String): Boolean {
-        return try {
-            val socket = Socket(ip, port)
-            val writer = PrintWriter(socket.getOutputStream(), true)
-            writer.println("PAIR_REQUEST:$pairingKey")
-            socket.close()
-            true
-        } catch (e: Exception) {
-            Log.e("PairingRepository", "Pairing request failed: ${e.message}")
-            false
-        }
-    }
-
-    suspend fun isPaired(): Boolean = withContext(Dispatchers.IO) {
-        prefsManager.isPaired()
-    }
-
-    suspend fun unpairDevice() {
-        withContext(Dispatchers.IO) {
-            secureStore.clearSecureData("pairing_key")
-            secureStore.clearSecureData("phone_id")
-            prefsManager.clearPairingData()
-        }
-    }
-
-    fun startConnection(){
-        println("Pending to write Connection Logic")
-    }
-
-    private fun generatePhoneId(): String {
-        return java.util.UUID.randomUUID().toString()
-    }
 }
+
+

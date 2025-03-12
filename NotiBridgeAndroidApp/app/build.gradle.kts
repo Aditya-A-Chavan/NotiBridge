@@ -60,6 +60,8 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.security.crypto.ktx)
+    implementation(libs.androidx.navigation.runtime.ktx)
+    implementation(libs.androidx.navigation.compose)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -74,7 +76,7 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.kotlinx.coroutines.core)
     implementation (libs.ui) // Replace with the latest version
-    implementation(libs.androidx.material) // Replace with the latest version
+    implementation(libs.androidx.material)
     implementation(libs.ui.tooling.preview) // Replace with the latest version
     implementation (libs.androidx.activity.compose.v130) // Replace with the latest version
 
@@ -86,5 +88,6 @@ dependencies {
     implementation(libs.androidx.security.crypto.ktx.v110alpha06)
     implementation(libs.jmdns)
     implementation(libs.gson)
+    implementation(libs.kotlinx.serialization.json)
 
 }

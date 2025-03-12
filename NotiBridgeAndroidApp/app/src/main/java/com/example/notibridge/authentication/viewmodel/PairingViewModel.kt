@@ -1,63 +1,120 @@
 package com.example.notibridge.authentication.viewmodel
 
-import android.app.Application
-import androidx.compose.runtime.Composable
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.notibridge.authentication.repository.PairingRepository
-import com.example.notibridge.authentication.ui.PairingSuccessScreen
+import com.example.notibridge.authentication.repository.ConnectionRepository
+import com.example.notibridge.authentication.storage.PrefsManager
+import com.example.notibridge.authentication.storage.SecureStore
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import androidx.lifecycle.ViewModelProvider
 
-class PairingViewModel(application: Application) : AndroidViewModel(application) {
-    private val repository = PairingRepository(application)
 
-    private val _isPaired = MutableStateFlow(true)
-    val isPaired = _isPaired.asStateFlow()
-    val isConnected = MutableStateFlow(false)
 
-    init {
-        checkPairingStatus()
-    }
+class PairingViewModel(
+    private val pairingRepository: PairingRepository,
+    private val connectionRepository: ConnectionRepository,
+    private val prefsManager: PrefsManager,
+    private val secureStore: SecureStore
+    ) : ViewModel(){
 
-    private fun checkPairingStatus() {
-        viewModelScope.launch {
-            _isPaired.value = repository.isPaired()
+        enum class PairingState{
+            UNPAIRED, PAIRED_DISCONNECTED, PAIRED_CONNECTED, ERROR
         }
-    }
 
-    fun initiatePairing(pairingKey: String, deviceId: String, onPairingComplete: String) {
-        viewModelScope.launch {
-            repository.initiatePairing(pairingKey, deviceId) { success ->
-                _isPaired.value = success
-                onPairingComplete(success)
+        //Defaults to UNPAIRED
+        //A mutable StateFlow that provides a setter for value.
+        // An instance of MutableStateFlow with the given initial value can be
+        // created using MutableStateFlow(value) constructor function.
+        private val _pairingState = MutableStateFlow<PairingState>(PairingState.UNPAIRED)
+        val pairingState: StateFlow<PairingState> = _pairingState
+
+
+        private val _errorMessage = MutableStateFlow<String?>(null)
+        val errorMessage: StateFlow<String?> = _errorMessage
+
+        init{
+            checkPairingState()
+        }
+
+        //Fetches deviceId and phoneId from storage and checks state
+        private fun checkPairingState(){
+            viewModelScope.launch {
+                val deviceId = prefsManager.getDeviceId()
+                val phoneId = secureStore.getPhoneId()
+
+                if(deviceId != null && phoneId != null){
+                    _pairingState.value = PairingState.PAIRED_DISCONNECTED
+                    attemptReconnection()
+                }else{
+                 _pairingState.value = PairingState.UNPAIRED
+                }
+            }
+        }
+
+        fun pairDevice(pairingKey: String, deviceId: String, hostname: String) {
+            viewModelScope.launch{
+                val phoneId = pairingRepository.generatePhoneId()
+                val result = pairingRepository.pairWithDevice(pairingKey, deviceId, phoneId, hostname)
+
+                if (result) {
+                    secureStore.savePhoneId(phoneId)
+//                    secureStore.savePairingkey(pairingKey)
+                    prefsManager.saveDeviceId(deviceId)
+                    prefsManager.saveHostname(hostname)
+                    _pairingState.value = PairingState.PAIRED_CONNECTED
+                }else{
+                    _errorMessage.value = "result.errorMessage"
+                }
+            }
+        }
+
+        private fun attemptReconnection(){
+            viewModelScope.launch {
+                val hostname = prefsManager.getHostname()
+                val deviceId = prefsManager.getDeviceId()
+                val phoneId = secureStore.getPhoneId()
+
+                val result = connectionRepository.authenticate(phoneId!!, deviceId!!, hostname!!)
+
+                if(result.success){
+                    _pairingState.value = PairingState.PAIRED_CONNECTED
+                }else{
+                    _pairingState.value = PairingState.PAIRED_DISCONNECTED
+                }
+            }
+        }
+
+        fun unpairDevice(){
+            viewModelScope.launch {
+                val phoneId = secureStore.getPhoneId() ?: return@launch
+                val deviceId = prefsManager.getDeviceId()
+
+                val result = pairingRepository.unpairDevice(phoneId)
+
+                if(result.success){
+                    secureStore.clearData()
+                    prefsManager.clearData()
+                    _pairingState.value = PairingState.UNPAIRED
+                }else{
+                    _errorMessage.value = result.errorMessage
+                }
             }
         }
     }
 
-
-
-    fun unpairDevice() {
-        viewModelScope.launch {
-            repository.unpairDevice()
-            _isPaired.value = false
+class PairingViewModelFactory(
+    private val pairingRepository: PairingRepository,
+    private val connectionRepository: ConnectionRepository,
+    private val prefsManager: PrefsManager,
+    private val secureStore: SecureStore
+) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(PairingViewModel::class.java)) {
+            return PairingViewModel(pairingRepository, connectionRepository, prefsManager, secureStore) as T
         }
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
-
-//    @Composable
-//    fun requestHandling(conncted: Boolean, paired: Boolean){
-//        if(conncted && paired){
-//            PairingSuccessScreen(pairingViewModel)
-//        }
-//        else if(paired && !conncted){
-//            repository.startConnection()
-//        }
-//        else if(!paired && !conncted){
-//            repository.initiatePairing()
-//        }
-//        else{
-//            println("how can it be NOT paired but CONNECTED????")
-//        }
-//    }
 }

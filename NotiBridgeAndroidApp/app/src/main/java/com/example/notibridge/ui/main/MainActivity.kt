@@ -3,40 +3,67 @@ package com.example.notibridge.ui.main
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.compose.runtime.*
-import androidx.lifecycle.lifecycleScope
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.notibridge.authentication.ui.*
 import com.example.notibridge.authentication.viewmodel.PairingViewModel
-import com.example.notibridge.ui.theme.NotiBridgeTheme
-import com.example.notibridge.authentication.ui.PairingScreen
-import com.example.notibridge.authentication.ui.PairingSuccessScreen
-import kotlinx.coroutines.launch
+import com.example.notibridge.authentication.viewmodel.PairingViewModelFactory
+import com.example.notibridge.authentication.repository.PairingRepository
+import com.example.notibridge.authentication.repository.ConnectionRepository
+import com.example.notibridge.authentication.storage.PrefsManager
+import com.example.notibridge.authentication.storage.SecureStore
+//import com.example.notibridge.authentication.storage.PrefsManager
+//import com.example.notibridge.authentication.storage.SecureStore
+import com.example.notibridge.network.NetworkManager
+import com.example.notibridge.network.mdns.MdnsService
 
 class MainActivity : ComponentActivity() {
-
-    private val pairingViewModel: PairingViewModel by viewModels()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        enableEdgeToEdge()
+        // 🔹 Create dependencies for PairingViewModel
+//        val pairingRepository = PairingRepository()
+//        val connectionRepository = ConnectionRepository()
 
-        lifecycleScope.launch {
-            val isPaired = pairingViewModel.isPaired.first()
+        val prefsManager = PrefsManager(this)
+        val secureStore = SecureStore(this)
+        val networkManager = NetworkManager()
+        val mdnsService = MdnsService(this)
 
-            setContent {
-                NotiBridgeTheme {
-                    val isPairedState by pairingViewModel.isPaired.collectAsState() // ✅ Live updates
 
-                    if (isPairedState) {
-                        PairingSuccessScreen(pairingViewModel)
-                    } else {
-                        PairingScreen(pairingViewModel)
-                    }
+        val pairingRepository = PairingRepository(secureStore, prefsManager, networkManager)
+        val connectionRepository = ConnectionRepository(prefsManager, secureStore, networkManager, mdnsService)
+        // 🔹 Create ViewModel using factory
+        val pairingViewModel: PairingViewModel by viewModels {
+            PairingViewModelFactory(pairingRepository, connectionRepository, prefsManager, secureStore)
+        }
+
+        setContent {
+            val navController = rememberNavController()
+
+            NavHost(navController = navController, startDestination = "disconnected") {
+                composable("disconnected") {
+                    DisconnectedScreen(
+                        pairingViewModel = pairingViewModel,  // ✅ Pass ViewModel
+                        onReconnectSuccess = { navController.navigate("connected") },
+                        onScanQr = { navController.navigate("qr_scanner") }
+                    )
+                }
+                composable("qr_scanner") {
+                    QRScannerScreen(
+                        navController = navController,
+                        pairingViewModel = pairingViewModel
+                    )
+                }
+                composable("connected") {
+                    ConnectedScreen(
+                        navController = navController,
+                        pairingViewModel = pairingViewModel
+                    )
                 }
             }
         }
-
     }
 }
