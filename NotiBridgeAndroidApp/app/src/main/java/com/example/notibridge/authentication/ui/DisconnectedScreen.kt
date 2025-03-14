@@ -1,5 +1,6 @@
 package com.example.notibridge.authentication.ui
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -25,6 +26,8 @@ fun DisconnectedScreen(
         when (pairingState) {
             PairingViewModel.PairingState.PAIRED_DISCONNECTED -> {
                 CircularProgressIndicator()
+                pairingViewModel.attemptReconnection()
+                Log.e("Disconnected Screen", "Attempting recon")
                 Spacer(modifier = Modifier.height(16.dp))
                 Text("Reconnecting...")
             }

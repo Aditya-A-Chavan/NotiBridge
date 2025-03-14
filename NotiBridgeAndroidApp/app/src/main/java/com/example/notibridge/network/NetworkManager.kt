@@ -1,5 +1,6 @@
 package com.example.notibridge.network
 
+import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.BufferedReader
@@ -14,6 +15,7 @@ class NetworkManager {
     private val TIMEOUT = 5000  // 5 seconds timeout
 
     suspend fun sendRequest(hostname: String, requestData: Map<String, String>): Map<String, Any?> {
+        Log.d("NetworkManager.sendRequest", "Network Manager's send req called on $hostname")
         return withContext(Dispatchers.IO) {
             val socket = Socket()
             try {

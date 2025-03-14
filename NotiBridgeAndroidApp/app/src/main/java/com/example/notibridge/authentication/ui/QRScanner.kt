@@ -33,6 +33,8 @@ fun QRScannerScreen(
                 val pairingKey = json["pairing_key"]?.jsonPrimitive?.content ?: ""
                 val hostname = json["hostname"]?.jsonPrimitive?.content ?: ""
 
+                Log.d("QRSCANNER DATA", "$deviceId $pairingKey $hostname" )
+
                 Log.d("QRScanner", "Extracted Device ID: $deviceId")
                 pairingViewModel.pairDevice(pairingKey, deviceId, hostname)
             } catch (e: Exception) {

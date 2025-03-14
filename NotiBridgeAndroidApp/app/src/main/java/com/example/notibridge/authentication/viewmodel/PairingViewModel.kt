@@ -1,5 +1,6 @@
 package com.example.notibridge.authentication.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.notibridge.authentication.repository.PairingRepository
@@ -35,11 +36,16 @@ class PairingViewModel(
         private val _errorMessage = MutableStateFlow<String?>(null)
         val errorMessage: StateFlow<String?> = _errorMessage
 
-        init{
-            checkPairingState()
+        init {
+            viewModelScope.launch {
+                pairingState.collect { state ->
+                    Log.d("PairingViewModel", "Pairing State Changed: $state")
+                }
+            }
         }
 
-        //Fetches deviceId and phoneId from storage and checks state
+
+    //Fetches deviceId and phoneId from storage and checks state
         private fun checkPairingState(){
             viewModelScope.launch {
                 val deviceId = prefsManager.getDeviceId()
@@ -71,11 +77,16 @@ class PairingViewModel(
             }
         }
 
-        private fun attemptReconnection(){
+        fun attemptReconnection(){
             viewModelScope.launch {
                 val hostname = prefsManager.getHostname()
                 val deviceId = prefsManager.getDeviceId()
                 val phoneId = secureStore.getPhoneId()
+
+                if(hostname == null || deviceId == null || phoneId == null){
+                    Log.e("Pairing View Model.attemptReconnection", "Unable to fetch hostname, deviceid, phoneid")
+                    return@launch
+                }
 
                 val result = connectionRepository.authenticate(phoneId!!, deviceId!!, hostname!!)
 
@@ -89,8 +100,14 @@ class PairingViewModel(
 
         fun unpairDevice(){
             viewModelScope.launch {
-                val phoneId = secureStore.getPhoneId() ?: return@launch
+                val phoneId = secureStore.getPhoneId()
                 val deviceId = prefsManager.getDeviceId()
+                Log.d("PairingViewModel", "Unpairing: phoneId=$phoneId, deviceId=$deviceId")
+
+                if(deviceId == null || phoneId == null){
+                    Log.e("PairingViewModel", "Cannot unpair, phoneId is null!")
+                    return@launch
+                }
 
                 val result = pairingRepository.unpairDevice(phoneId)
 

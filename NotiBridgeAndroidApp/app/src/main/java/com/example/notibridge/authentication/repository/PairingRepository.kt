@@ -1,5 +1,6 @@
 package com.example.notibridge.authentication.repository
 
+import android.util.Log
 import com.example.notibridge.authentication.storage.PrefsManager
 import com.example.notibridge.authentication.storage.SecureStore
 import com.example.notibridge.network.NetworkManager
@@ -48,6 +49,8 @@ class PairingRepository(
 //    }
 
     suspend fun pairWithDevice(pairingKey: String, deviceId: String, phoneId: String, hostname: String): Boolean {
+
+        Log.d("Pairing repository.pairWithDevice", "Attempting pair procedure with: $deviceId")
         val requestData = mapOf(
                "request" to "PAIR",
                 "device_id" to deviceId,
