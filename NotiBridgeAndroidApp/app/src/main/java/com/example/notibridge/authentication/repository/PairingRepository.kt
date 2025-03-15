@@ -7,12 +7,16 @@ import com.example.notibridge.network.NetworkManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.UUID
-
+import com.example.notibridge.network.mdns.MdnsService
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.time.withTimeoutOrNull
+import kotlinx.coroutines.withTimeoutOrNull
 
 class PairingRepository(
     private val secureStore: SecureStore,
     private val prefsManager: PrefsManager,
-    private val networkManager: NetworkManager // TODO: implement network manager
+    private val networkManager: NetworkManager,
+    private val mdnsService: MdnsService
 ){
 
     //Return Class for whenever Pairing Repository is called
@@ -48,26 +52,47 @@ class PairingRepository(
 //        }
 //    }
 
-    suspend fun pairWithDevice(pairingKey: String, deviceId: String, phoneId: String, hostname: String): Boolean {
-
+    suspend fun pairWithDevice(pairingKey: String, deviceId: String, phoneId: String): Boolean {
         Log.d("Pairing repository.pairWithDevice", "Attempting pair procedure with: $deviceId")
-        val requestData = mapOf(
-               "request" to "PAIR",
-                "device_id" to deviceId,
-                "phone_id" to phoneId,
-                "pairing_key" to pairingKey
-        )
-        val response = networkManager.sendRequest(hostname, requestData)
 
-        if(response["status"] == "SUCCESS") {
+        val hostIp = withContext(Dispatchers.IO) {
+            val result = CompletableDeferred<String?>()
+
+            mdnsService.startMdnsDiscovery("_notibridge._tcp.") { ip, hostname ->
+                if (hostname == deviceId) {
+                    result.complete(ip)
+                }
+            }
+
+            withTimeoutOrNull(3000) { result.await() }
+        }
+
+        if (hostIp == null) {
+            Log.e("Pairing repository.pairWithDevice", "Failed to resolve device IP for deviceId: $deviceId")
+            return false
+        }
+
+        Log.d("mDNS Output", "Resolved IP: $hostIp for deviceId: $deviceId")
+
+        // Prepare the request data
+        val requestData = mapOf(
+            "request" to "PAIR",
+            "device_id" to deviceId,
+            "phone_id" to phoneId,
+            "pairing_key" to pairingKey
+        )
+
+        val response = networkManager.sendRequest(hostIp, requestData)
+
+        return if (response["status"] == "SUCCESS") {
             secureStore.savePhoneId(phoneId)
             secureStore.savePairingKey(pairingKey)
             prefsManager.saveDeviceId(deviceId)
-            prefsManager.saveHostname(hostname)
-
-            return true
-        }else{
-            return false
+            Log.d("Pairing repository.pairWithDevice", "Pairing successful for deviceId: $deviceId")
+            true
+        } else {
+            Log.e("Pairing repository.pairWithDevice", "Pairing failed for deviceId: $deviceId")
+            false
         }
     }
 

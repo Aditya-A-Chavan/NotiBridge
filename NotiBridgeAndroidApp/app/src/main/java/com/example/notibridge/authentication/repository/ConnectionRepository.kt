@@ -42,8 +42,8 @@ class ConnectionRepository(
             val deviceId = prefsManager.getDeviceId() ?: return@withContext AuthResult(false, "No paired device")
             val cachedHostname = prefsManager.getHostname()
 
-            var hostname = cachedHostname ?: mdnsService.resolveDeviceHostname(deviceId)
-
+//            var hostname = cachedHostname ?: mdnsService.resolveDeviceHostname(deviceId)
+            var hostname = "DAMN"
             if (hostname == null) {
                 return@withContext AuthResult(false, "Device not found on network")
             }

@@ -60,16 +60,16 @@ class PairingViewModel(
             }
         }
 
-        fun pairDevice(pairingKey: String, deviceId: String, hostname: String) {
+        fun pairDevice(pairingKey: String, deviceId: String) {
             viewModelScope.launch{
                 val phoneId = pairingRepository.generatePhoneId()
-                val result = pairingRepository.pairWithDevice(pairingKey, deviceId, phoneId, hostname)
+                val result = pairingRepository.pairWithDevice(pairingKey, deviceId, phoneId)
 
                 if (result) {
                     secureStore.savePhoneId(phoneId)
 //                    secureStore.savePairingkey(pairingKey)
                     prefsManager.saveDeviceId(deviceId)
-                    prefsManager.saveHostname(hostname)
+//                    prefsManager.saveHostname(hostname)
                     _pairingState.value = PairingState.PAIRED_CONNECTED
                 }else{
                     _errorMessage.value = "result.errorMessage"

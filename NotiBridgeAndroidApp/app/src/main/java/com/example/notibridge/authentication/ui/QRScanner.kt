@@ -31,12 +31,12 @@ fun QRScannerScreen(
                 val json = Json.parseToJsonElement(result.contents).jsonObject
                 val deviceId = json["device_id"]?.jsonPrimitive?.content ?: ""
                 val pairingKey = json["pairing_key"]?.jsonPrimitive?.content ?: ""
-                val hostname = json["hostname"]?.jsonPrimitive?.content ?: ""
+//                val hostname = json["hostname"]?.jsonPrimitive?.content ?: ""
 
-                Log.d("QRSCANNER DATA", "$deviceId $pairingKey $hostname" )
+                Log.d("QRSCANNER DATA", "$deviceId $pairingKey" )
 
                 Log.d("QRScanner", "Extracted Device ID: $deviceId")
-                pairingViewModel.pairDevice(pairingKey, deviceId, hostname)
+                pairingViewModel.pairDevice(pairingKey, deviceId)
             } catch (e: Exception) {
                 Log.e("QRScanner", "Error parsing QR code", e)
             }

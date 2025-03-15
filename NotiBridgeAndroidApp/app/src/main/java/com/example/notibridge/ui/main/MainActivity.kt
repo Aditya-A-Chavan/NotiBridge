@@ -33,7 +33,7 @@ class MainActivity : ComponentActivity() {
         val mdnsService = MdnsService(this)
 
 
-        val pairingRepository = PairingRepository(secureStore, prefsManager, networkManager)
+        val pairingRepository = PairingRepository(secureStore, prefsManager, networkManager, mdnsService)
         val connectionRepository = ConnectionRepository(prefsManager, secureStore, networkManager, mdnsService)
         // 🔹 Create ViewModel using factory
         val pairingViewModel: PairingViewModel by viewModels {

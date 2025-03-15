@@ -1,67 +1,73 @@
 package com.example.notibridge.network.mdns
 
 import android.content.Context
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import java.net.InetAddress
-import javax.jmdns.JmDNS
-import javax.jmdns.ServiceEvent
-import javax.jmdns.ServiceInfo
-import javax.jmdns.ServiceListener
+import android.net.nsd.NsdManager
+import android.net.nsd.NsdServiceInfo
+import android.util.Log
 
 class MdnsService(private val context: Context) {
 
-    private var jmdns: JmDNS? = null
+    private var nsdManager: NsdManager? = null
+    private var discoveryListener: NsdManager.DiscoveryListener? = null
+    private var resolveListener: NsdManager.ResolveListener? = null
 
-    suspend fun startMdnsDiscovery(serviceType: String, onDeviceFound: (String, String) -> Unit) {
-        withContext(Dispatchers.IO) {
-            try {
-                val wifiManager = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as android.net.wifi.WifiManager
-                val lock = wifiManager.createMulticastLock("mDNSLock")
-                lock.setReferenceCounted(true)
-                lock.acquire()
+    fun startMdnsDiscovery(serviceType: String, onDeviceFound: (String, String) -> Unit) {
+        nsdManager = context.getSystemService(Context.NSD_SERVICE) as NsdManager
 
-                val intf = InetAddress.getLocalHost()
-                jmdns = JmDNS.create(intf)
+        discoveryListener = object : NsdManager.DiscoveryListener {
+            override fun onDiscoveryStarted(serviceType: String) {
+                Log.d("mDNS", "Discovery started for $serviceType")
+            }
 
-                jmdns?.addServiceListener(serviceType, object : ServiceListener {
-                    override fun serviceAdded(event: ServiceEvent) {
-                        jmdns?.requestServiceInfo(event.type, event.name)
+            override fun onServiceFound(serviceInfo: NsdServiceInfo) {
+                Log.d("mDNS", "Service found: ${serviceInfo.serviceName}")
+
+                resolveListener = object : NsdManager.ResolveListener {
+                    override fun onResolveFailed(serviceInfo: NsdServiceInfo, errorCode: Int) {
+                        Log.e("mDNS", "Resolve failed: $errorCode")
                     }
 
-                    override fun serviceRemoved(event: ServiceEvent) {}
-
-                    override fun serviceResolved(event: ServiceEvent) {
-                        val ip = event.info.inetAddresses.firstOrNull()?.hostAddress
-                        val hostname = event.info.name
-                        if (ip != null) {
-                            onDeviceFound(ip, hostname)
-                        }
+                    override fun onServiceResolved(serviceInfo: NsdServiceInfo) {
+                        val ip = serviceInfo.host.hostAddress
+                        val hostname = serviceInfo.serviceName
+                        Log.d("mDNS", "Resolved: $hostname -> $ip")
+                        onDeviceFound(ip, hostname)
                     }
-                })
-            } catch (e: Exception) {
-                e.printStackTrace()
+                }
+
+                nsdManager?.resolveService(serviceInfo, resolveListener!!)
+            }
+
+            override fun onServiceLost(serviceInfo: NsdServiceInfo) {
+                Log.d("mDNS", "Service lost: ${serviceInfo.serviceName}")
+            }
+
+            override fun onDiscoveryStopped(serviceType: String) {
+                Log.d("mDNS", "Discovery stopped")
+            }
+
+            override fun onStartDiscoveryFailed(serviceType: String, errorCode: Int) {
+                Log.e("mDNS", "Discovery start failed: $errorCode")
+                stopMdnsDiscovery()
+            }
+
+            override fun onStopDiscoveryFailed(serviceType: String, errorCode: Int) {
+                Log.e("mDNS", "Discovery stop failed: $errorCode")
             }
         }
-    }
 
-    suspend fun resolveDeviceHostname(deviceId: String): String? {
-        return withContext(Dispatchers.IO) {
-            try {
-                val serviceType = "_notibridge._tcp.local."
-                val serviceName = "$deviceId.$serviceType"
-                val serviceInfo: ServiceInfo? = jmdns?.getServiceInfo(serviceType, serviceName)
-
-                return@withContext serviceInfo?.inetAddresses?.firstOrNull()?.hostAddress
-            } catch (e: Exception) {
-                e.printStackTrace()
-                return@withContext null
-            }
-        }
+        nsdManager?.discoverServices(serviceType, NsdManager.PROTOCOL_DNS_SD, discoveryListener!!)
     }
 
     fun stopMdnsDiscovery() {
-        jmdns?.close()
-        jmdns = null
+        try {
+            discoveryListener?.let { nsdManager?.stopServiceDiscovery(it) }
+            resolveListener = null
+            discoveryListener = null
+            nsdManager = null
+            Log.d("mDNS", "mDNS discovery stopped")
+        } catch (e: Exception) {
+            Log.e("mDNS", "Error stopping discovery: ${e.message}")
+        }
     }
 }
