@@ -72,6 +72,7 @@ class PairingRepository(
             return false
         }
 
+
         Log.d("mDNS Output", "Resolved IP: $hostIp for deviceId: $deviceId")
 
         // Prepare the request data
@@ -88,6 +89,8 @@ class PairingRepository(
             secureStore.savePhoneId(phoneId)
             secureStore.savePairingKey(pairingKey)
             prefsManager.saveDeviceId(deviceId)
+            prefsManager.saveHostIp(hostIp)
+
             Log.d("Pairing repository.pairWithDevice", "Pairing successful for deviceId: $deviceId")
             true
         } else {
@@ -98,14 +101,14 @@ class PairingRepository(
 
     suspend fun unpairDevice(phoneId: String): PairingResult{
         return withContext(Dispatchers.IO){
-            val hostname = prefsManager.getHostname() ?: return@withContext PairingResult(false, "No Paired Device to Unpair")
-
+//            val hostname = prefsManager.getHostname() ?: return@withContext PairingResult(false, "No Paired Device to Unpair")
+            val hostIp = prefsManager.getHostIp() ?: return@withContext PairingResult(false, "HostIp not found")
             val requestData = mapOf(
                 "request" to "UNPAIR",
                 "phone_id" to phoneId
             )
 
-            val response = networkManager.sendRequest(hostname, requestData)
+            val response = networkManager.sendRequest(hostIp, requestData)
 
             return@withContext if(response["status"] == "SUCCESS"){
                 secureStore.clearData()

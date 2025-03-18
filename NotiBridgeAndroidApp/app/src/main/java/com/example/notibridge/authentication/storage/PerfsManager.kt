@@ -14,7 +14,7 @@ class PrefsManager(private val context: Context) {
 
     companion object {
         private val DEVICE_ID_KEY = stringPreferencesKey("device_id")
-        private val HOSTNAME_KEY = stringPreferencesKey("hostname")
+        private val HOST_IP_KEY = stringPreferencesKey("hostIp")
     }
 
     suspend fun saveDeviceId(deviceId: String) {
@@ -28,15 +28,26 @@ class PrefsManager(private val context: Context) {
         return prefs[DEVICE_ID_KEY]
     }
 
-    suspend fun saveHostname(hostname: String) {
-        context.dataStore.edit { prefs ->
-            prefs[HOSTNAME_KEY] = hostname
-        }
+//    suspend fun saveHostname(hostname: String) {
+//        context.dataStore.edit { prefs ->
+//            prefs[HOSTNAME_KEY] = hostname
+//        }
+//    }
+
+//    suspend fun getHostname(): String? {
+//        val prefs = context.dataStore.data.first()
+//        return prefs[HOSTNAME_KEY]
+//    }
+
+    suspend fun getHostIp(): String? {
+        val prefs = context.dataStore.data.first()
+        return prefs[HOST_IP_KEY]
     }
 
-    suspend fun getHostname(): String? {
-        val prefs = context.dataStore.data.first()
-        return prefs[HOSTNAME_KEY]
+    suspend fun saveHostIp(hostIp: String){
+        context.dataStore.edit { prefs ->
+            prefs[HOST_IP_KEY] = hostIp
+        }
     }
 
     suspend fun clearData() {

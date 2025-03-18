@@ -1,6 +1,8 @@
 package com.example.notibridge.network
 
 import android.util.Log
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.BufferedReader
@@ -13,13 +15,15 @@ import org.json.JSONObject
 class NetworkManager {
 
     private val TIMEOUT = 5000  // 5 seconds timeout
+    private val gson = Gson()
 
-    suspend fun sendRequest(hostname: String, requestData: Map<String, String>): Map<String, Any?> {
-        Log.d("NetworkManager.sendRequest", "Network Manager's send req called on $hostname")
+    suspend fun sendRequest(hostIp: String, requestData: Map<String, String>): Map<String, Any?> {
+        Log.d("NetworkManager.sendRequest", "Network Manager's send req called on $hostIp")
         return withContext(Dispatchers.IO) {
             val socket = Socket()
+
             try {
-                socket.connect(InetSocketAddress(hostname, 5001), TIMEOUT)
+                socket.connect(InetSocketAddress(hostIp, 5001), TIMEOUT)
                 val outputStream = OutputStreamWriter(socket.getOutputStream())
                 val inputStream = BufferedReader(InputStreamReader(socket.getInputStream()))
 
@@ -32,8 +36,8 @@ class NetworkManager {
                 val responseJson = inputStream.readLine()
                 socket.close()
 
-                // Convert JSON response to Map<String, String>
-                return@withContext JSONObject(responseJson).toMap()
+                val type = object : TypeToken<Map<String, Any?>>() {}.type
+                return@withContext gson.fromJson(responseJson, type)
             } catch (e: Exception) {
                 e.printStackTrace()
                 return@withContext mapOf(
@@ -46,6 +50,7 @@ class NetworkManager {
         }
     }
 
+    // Extension function for JSONObject
     private fun JSONObject.toMap(): Map<String, Any?> {
         val map = mutableMapOf<String, Any?>()
         val keys = this.keys()

@@ -54,6 +54,7 @@ def start_socket_server(hostname, port):
             if data:
                 print(f"Received data: {data.decode('utf-8')}")
                 response = json.dumps({"status": "SUCCESS"})
+                print(response)
                 client_socket.send(response.encode("utf-8"))
             else:
                 print("No data received from client.")

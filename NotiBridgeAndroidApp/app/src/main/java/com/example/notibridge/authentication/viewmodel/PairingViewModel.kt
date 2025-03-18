@@ -37,6 +37,9 @@ class PairingViewModel(
         val errorMessage: StateFlow<String?> = _errorMessage
 
         init {
+
+            checkPairingState()
+
             viewModelScope.launch {
                 pairingState.collect { state ->
                     Log.d("PairingViewModel", "Pairing State Changed: $state")
@@ -45,7 +48,7 @@ class PairingViewModel(
         }
 
 
-    //Fetches deviceId and phoneId from storage and checks state
+    //Fetches deviceId and phoneId from storage and checks state (TO BE USED FOR CHECKING PAIRING STATE WHILE INITIALIZING VIEW MODEL)
         private fun checkPairingState(){
             viewModelScope.launch {
                 val deviceId = prefsManager.getDeviceId()
@@ -79,18 +82,19 @@ class PairingViewModel(
 
         fun attemptReconnection(){
             viewModelScope.launch {
-                val hostname = prefsManager.getHostname()
+//                val hostname = prefsManager.getHostname()
                 val deviceId = prefsManager.getDeviceId()
                 val phoneId = secureStore.getPhoneId()
+                val currHostIp = prefsManager.getHostIp()
 
-                if(hostname == null || deviceId == null || phoneId == null){
+                if(deviceId == null || phoneId == null){
                     Log.e("Pairing View Model.attemptReconnection", "Unable to fetch hostname, deviceid, phoneid")
                     return@launch
                 }
 
-                val result = connectionRepository.authenticate(phoneId!!, deviceId!!, hostname!!)
+                val result = connectionRepository.authenticate(phoneId, deviceId, currHostIp)
 
-                if(result.success){
+                if(result){
                     _pairingState.value = PairingState.PAIRED_CONNECTED
                 }else{
                     _pairingState.value = PairingState.PAIRED_DISCONNECTED
