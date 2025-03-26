@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.notibridge.authentication.viewmodel.PairingViewModel
+import com.example.notibridge.services.ForegroundService
 
 @Composable
 fun ConnectedScreen(

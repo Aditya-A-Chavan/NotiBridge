@@ -1,0 +1,41 @@
+NotiBridge Communication Workflow
+Android App:
+NetworkManager handles Pairing, Authentication, and Unpairing.
+
+If PairingState is UNPAIRED, the mDNS resolver runs continuously to discover the desktop until a persistent connection is established.
+
+Upon successful authentication/pairing, a persistent WebSocket connection is established via WebSocketClient.
+
+Connection Monitoring & Recovery:
+
+Monitors Wi-Fi network changes or persistent connection failures.
+
+If detected, pairingState changes to PAIRED_DISCONNECTED.
+
+After a delay (X seconds), it triggers an mDNS resolver to locate the desktop’s IP.
+
+If resolved, attempts to reconnect and re-establish the persistent WebSocket connection.
+
+Once a persistent connection is established, the mDNS process stops.
+
+All further communication occurs exclusively over the persistent WebSocket connection.
+
+Desktop App:
+AuthManager handles Pairing, Authentication, and Unpairing.
+
+If PairingState is UNPAIRED, the mDNS broadcasting process runs continuously to allow the Android app to discover the desktop until a persistent connection is established.
+
+Connection Monitoring & Recovery:
+
+Monitors Wi-Fi network changes or persistent connection failures.
+
+If detected, pairingState changes to PAIRED_DISCONNECTED.
+
+mDNS broadcasting is initiated to allow the Android app to rediscover the desktop.
+
+Once the Android app resolves the IP and re-authenticates, a persistent WebSocket connection is established via WebSocketServer.
+
+Once a persistent connection is established, mDNS broadcasting stops.
+
+All further communication occurs exclusively over the persistent WebSocket connection.
+
