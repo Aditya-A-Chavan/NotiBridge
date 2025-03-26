@@ -1,6 +1,8 @@
 package com.example.notibridge.ui.main
 
+import android.content.Context
 import android.os.Bundle
+import android.text.TextUtils
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -18,10 +20,22 @@ import com.example.notibridge.authentication.storage.SecureStore
 //import com.example.notibridge.authentication.storage.SecureStore
 import com.example.notibridge.network.NetworkManager
 import com.example.notibridge.network.mdns.MdnsService
+import com.example.notibridge.services.ForegroundService
+import android.provider.Settings
+import  android.content.Intent
+import android.app.AlertDialog
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if(!isNotificationAccessEnabled()){
+            showNotificationAccessDialog()
+        }
+
+        ForegroundService.startService(this)
+
 
         // 🔹 Create dependencies for PairingViewModel
 //        val pairingRepository = PairingRepository()
@@ -31,6 +45,7 @@ class MainActivity : ComponentActivity() {
         val secureStore = SecureStore(this)
         val networkManager = NetworkManager()
         val mdnsService = MdnsService(this)
+
 
 
         val pairingRepository = PairingRepository(secureStore, prefsManager, networkManager, mdnsService)
@@ -65,5 +80,24 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    private fun Context.isNotificationAccessEnabled(): Boolean{
+        val enabledListeners = Settings.Secure.getString(contentResolver, "enabled_notification_listeners")
+        return !TextUtils.isEmpty(enabledListeners) && enabledListeners.contains(packageName)
+    }
+
+    private fun Context.showNotificationAccessDialog(){
+        val builder = AlertDialog.Builder(this)
+
+        builder.setTitle("Notification Access")
+        builder.setMessage("This app requires notification access to function properly. Would you like to enable it?")
+        builder.setPositiveButton("Go do Settings?"){_,_ ->
+            val intent = Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
+            startActivity(intent)
+        }
+
+        builder.setNegativeButton("Cancel", null)
+        builder.show()
     }
 }

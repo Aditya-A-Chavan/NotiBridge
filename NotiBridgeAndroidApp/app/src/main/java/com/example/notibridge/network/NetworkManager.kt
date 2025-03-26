@@ -12,6 +12,10 @@ import java.net.InetSocketAddress
 import java.net.Socket
 import org.json.JSONObject
 
+
+
+//THIS IS TO BE USED JUST FOR PAIRING, AUTHENTICATION, UNPAIR
+//NOT FOR SENDING NOTIFICATIONS
 class NetworkManager {
 
     private val TIMEOUT = 5000  // 5 seconds timeout

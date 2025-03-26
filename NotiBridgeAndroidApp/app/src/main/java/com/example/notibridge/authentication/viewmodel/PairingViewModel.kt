@@ -109,7 +109,7 @@ class PairingViewModel(
                 Log.d("PairingViewModel", "Unpairing: phoneId=$phoneId, deviceId=$deviceId")
 
                 if(deviceId == null || phoneId == null){
-                    Log.e("PairingViewModel", "Cannot unpair, phoneId is null!")
+                    Log.e("PairingViewModel", "Cannot unpair, cannot find device Id and Phone Id in shared prefs")
                     return@launch
                 }
 
