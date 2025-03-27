@@ -118,4 +118,5 @@ yarn.lock
 *.swp
 *.swo
 *.swn
+local/
 local.text
