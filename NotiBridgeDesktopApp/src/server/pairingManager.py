@@ -15,7 +15,6 @@ class PairingStateManager:
         self.load_pairing_state()
     
     def load_pairing_state(self):
-        if os.path.exists(PAIRING_STATE_FILE):
             try:
                 with open(PAIRING_STATE_FILE, "r") as f:
                     self.pairing_state = json.load(f).get("pairing_state", "UNPAIRED")
