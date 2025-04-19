@@ -22,7 +22,7 @@ class PairingStateManager:
                 logger.error(f"Error loading pairing state: {e}")
                 self.pairing_state = "UNPAIRED"
         
-        logger.info(f"Loaded pairing state: {self.pairing_state}")
+            logger.info(f"Loaded pairing state: {self.pairing_state}")
 
     def save_pairing_state(self, newState):
         with self.lock:
