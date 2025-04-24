@@ -8,7 +8,7 @@ import { IoMdArrowForward } from 'react-icons/io';
 import TechnicalFlowchart from './components/TechnicalFlowchart';
 
 function App() {
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeFaq, setActiveFaq] = useState(null);
 
@@ -58,6 +58,7 @@ function App() {
                 <li><a href="#features">Features</a></li>
                 <li><a href="#tech-stack">Tech Stack</a></li>
                 <li><a href="#technical-flow">Technical Flow</a></li>
+                <li><a href="#setup-guide">Setup Guide</a></li>
                 <li><a href="#about">About</a></li>
                 <li><a href="#faq">FAQ</a></li>
               </ul>
@@ -495,6 +496,68 @@ function App() {
         </div>
       </section>
 
+      <section id="setup-guide">
+        <div className="container">
+          <div className="section-header">
+            <h2>Setup Guide</h2>
+            <p className="section-subtitle">
+              Get started with NotiBridge in just a few simple steps
+            </p>
+          </div>
+          
+          <div className="setup-steps">
+            <div className="setup-step">
+              <div className="step-number">1</div>
+              <div className="step-content">
+                <h3>Install Desktop App</h3>
+                <p>Run the installer on your Windows PC and follow the installation wizard. Launch the app once installed.</p>
+              </div>
+              <div className="step-arrow right"><IoMdArrowForward /></div>
+            </div>
+            
+            <div className="setup-step">
+              <div className="step-number">2</div>
+              <div className="step-content">
+                <h3>Install Android App</h3>
+                <p>Install the APK file on your Android device. You may need to allow installation from unknown sources in your settings.</p>
+              </div>
+              <div className="step-arrow down"><IoMdArrowForward /></div>
+            </div>
+            
+            <div className="setup-step">
+              <div className="step-number">3</div>
+              <div className="step-content">
+                <h3>Generate Pairing Code</h3>
+                <p>In the desktop app, click "Generate QR Code" to create a unique pairing code for your devices.</p>
+              </div>
+              <div className="step-arrow left"><IoMdArrowForward /></div>
+            </div>
+            
+            <div className="setup-step">
+              <div className="step-number">4</div>
+              <div className="step-content">
+                <h3>Scan QR Code</h3>
+                <p>Open the Android app and use it to scan the QR code displayed on your desktop. This establishes a secure connection.</p>
+              </div>
+              <div className="step-arrow down-center"><IoMdArrowForward /></div>
+            </div>
+            
+            <div className="setup-step">
+              <div className="step-number">5</div>
+              <div className="step-content">
+                <h3>Grant Permissions</h3>
+                <p>Allow notification access on your Android device when prompted. This lets NotiBridge send your notifications to your PC.</p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="setup-note">
+            <div className="note-icon"><FaLock /></div>
+            <p>All communication happens locally over your Wi-Fi network. Your notification data never leaves your network or passes through any external servers.</p>
+          </div>
+        </div>
+      </section>
+
       <section id="about">
         <div className="container">
           <div className="section-header">
@@ -675,7 +738,7 @@ function App() {
             <div className="footer-brand">
               <div className="logo">NotiBridge</div>
               <p>
-                An open-source project that bridges notifications between your devices. Built with ❤️ by developers for developers.
+                An open-source project that bridges notifications between your devices. Built with ❤️ by a developer for developers.
               </p>
             </div>
             <div className="footer-links">
@@ -700,7 +763,7 @@ function App() {
             </div>
           </div>
           <div className="copyright">
-            © {new Date().getFullYear()} NotiBridge. Open source under MIT License.
+            By Aditya Chavan 😎
           </div>
         </div>
       </footer>
