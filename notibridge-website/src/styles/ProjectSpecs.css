@@ -1,0 +1,139 @@
+.project-specs-section {
+  padding: 5rem 2rem;
+  background-color: #f8f9fa;
+}
+
+.project-specs-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.section-title {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 3rem;
+  color: #333;
+  position: relative;
+}
+
+.section-title:after {
+  content: '';
+  position: absolute;
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(90deg, #4a6cf7, #6e8fff);
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 2px;
+}
+
+.project-specs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.specs-card {
+  background-color: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.specs-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.specs-title {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #4a6cf7;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 0.5rem;
+}
+
+.specs-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.specs-list li {
+  padding: 0.6rem 0;
+  border-bottom: 1px solid #f5f5f5;
+  display: flex;
+  align-items: center;
+  color: #555;
+  font-size: 0.95rem;
+}
+
+.specs-list li:last-child {
+  border-bottom: none;
+}
+
+.specs-list li:before {
+  content: '•';
+  color: #4a6cf7;
+  font-weight: bold;
+  margin-right: 0.8rem;
+  font-size: 1.2rem;
+}
+
+.project-links {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+}
+
+.project-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1.5rem;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.project-link.github {
+  background-color: #24292e;
+  color: white;
+}
+
+.project-link.docs {
+  background-color: #4a6cf7;
+  color: white;
+}
+
+.project-link.demo {
+  background-color: #9921e8;
+  color: white;
+}
+
+.project-link:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 768px) {
+  .project-specs-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .project-links {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .project-link {
+    width: 100%;
+    max-width: 250px;
+    justify-content: center;
+  }
+} 
