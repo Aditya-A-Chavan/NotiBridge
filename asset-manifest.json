@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/notibridge/static/css/main.74b4b1ff.css",
-    "main.js": "/notibridge/static/js/main.6864f777.js",
-    "static/js/453.834d2466.chunk.js": "/notibridge/static/js/453.834d2466.chunk.js",
-    "index.html": "/notibridge/index.html",
-    "main.74b4b1ff.css.map": "/notibridge/static/css/main.74b4b1ff.css.map",
-    "main.6864f777.js.map": "/notibridge/static/js/main.6864f777.js.map",
-    "453.834d2466.chunk.js.map": "/notibridge/static/js/453.834d2466.chunk.js.map"
+    "main.css": "/NotiBridge/static/css/main.74b4b1ff.css",
+    "main.js": "/NotiBridge/static/js/main.2cf67bbf.js",
+    "static/js/453.834d2466.chunk.js": "/NotiBridge/static/js/453.834d2466.chunk.js",
+    "index.html": "/NotiBridge/index.html",
+    "main.74b4b1ff.css.map": "/NotiBridge/static/css/main.74b4b1ff.css.map",
+    "main.2cf67bbf.js.map": "/NotiBridge/static/js/main.2cf67bbf.js.map",
+    "453.834d2466.chunk.js.map": "/NotiBridge/static/js/453.834d2466.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.74b4b1ff.css",
-    "static/js/main.6864f777.js"
+    "static/js/main.2cf67bbf.js"
   ]
 }
