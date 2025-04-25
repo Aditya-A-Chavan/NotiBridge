@@ -85,19 +85,19 @@ function App() {
             <div className="key-features-highlight">
               <div className="key-feature">
                 <div className="key-feature-icon"><RiNotification4Line /></div>
-                <div className="key-feature-text">Privacy Focused</div>
+                <div className="key-feature-text">No external server is ever pinged</div>
               </div>
               <div className="key-feature">
                 <div className="key-feature-icon"><FaWifi /></div>
-                <div className="key-feature-text">No Cloud Required</div>
+                <div className="key-feature-text">Works over local Wi-Fi</div>
               </div>
               <div className="key-feature">
                 <div className="key-feature-icon"><FaQrcode /></div>
-                <div className="key-feature-text">Secure QR Pairing</div>
+                <div className="key-feature-text">Secure and Easy QR Pairing</div>
               </div>
               <div className="key-feature">
                 <div className="key-feature-icon"><FaSync /></div>
-                <div className="key-feature-text">Auto-Reconnect</div>
+                <div className="key-feature-text">Auto-Reconnect on network change or device startup</div>
               </div>
             </div>
             
@@ -561,16 +561,26 @@ function App() {
       <section id="about">
         <div className="container">
           <div className="section-header">
-            <h2>About The Project</h2>
+            <h2>About The Developer</h2>
             <p className="section-subtitle">
-              A personal project built to solve a real-world problem
+              A student developer from KJ Somaiya College of Engineering, Mumbai.
             </p>
           </div>
 
           <div className="developer-profile">
             <div className="developer-info">
-              <h3 className="developer-name">Aditya Chavan</h3>
-              <div className="developer-title">Software Engineer & Tech Enthusiast</div>
+              <div className="developer-header">
+              <a href="https://github.com/aditya-a-chavan" target="_blank" rel="noopener noreferrer">
+                <div className="developer-img-container">
+                  
+                  <img src="/images/aditya-profile.jpg" alt="Aditya Chavan" className="developer-img" />
+                </div>
+                </a>
+                <div className="developer-identity">
+                  <h3 className="developer-name"> <a href="https://github.com/aditya-a-chavan" target="_blank" rel="noopener noreferrer">Aditya Chavan</a></h3>
+                  <div className="developer-title">Software Engineer & Tech Enthusiast</div>
+                </div>
+              </div>
               <p className="developer-bio">
                 I'm a tech enthusiast and aspiring programmer who absolutely loves to know how things work in 
                 the backend of the digital world. Currently a student at KJ Somaiya College of Engineering, 
@@ -578,26 +588,52 @@ function App() {
                 it comes to technology and computers. In my view, hands-on experience trumps classroom learning.
               </p>
               <div className="developer-skills">
-                <span className="skill-tag">Java</span>
-                <span className="skill-tag">Spring</span>
-                <span className="skill-tag">Python</span>
-                <span className="skill-tag">JavaScript</span>
-                <span className="skill-tag">Node.js</span>
-                <span className="skill-tag">Express.js</span>
-                <span className="skill-tag">Django</span>
-                <span className="skill-tag">Flask</span>
-                <span className="skill-tag">MongoDB</span>
-                <span className="skill-tag">MySQL</span>
-                <span className="skill-tag">Postgres</span>
-                <span className="skill-tag">Redis</span>
-                <span className="skill-tag">Neo4J</span>
-                <span className="skill-tag">AWS</span>
-                <span className="skill-tag">Docker</span>
-                <span className="skill-tag">Kubernetes</span>
-                <span className="skill-tag">Firebase</span>
-                <span className="skill-tag">Solidity</span>
-                <span className="skill-tag">Socket.io</span>
-                <span className="skill-tag">Linux</span>
+                <div className="skills-category">
+                  <h4 className="category-title">Languages</h4>
+                  <div className="category-skills">
+                    <span className="skill-tag java"><i className="devicon-java-plain"></i> JAVA</span>
+                    <span className="skill-tag python"><i className="devicon-python-plain"></i> PYTHON</span>
+                    <span className="skill-tag javascript"><i className="devicon-javascript-plain"></i> JAVASCRIPT</span>
+                    <span className="skill-tag solidity"><i className="devicon-solidity-plain"></i> SOLIDITY</span>
+                  </div>
+                </div>
+                
+                <div className="skills-category">
+                  <h4 className="category-title">Frameworks & Libraries</h4>
+                  <div className="category-skills">
+                    <span className="skill-tag spring"><i className="devicon-spring-plain"></i> SPRING</span>
+                    <span className="skill-tag nodejs"><i className="devicon-nodejs-plain"></i> NODE.JS</span>
+                    <span className="skill-tag express"><i className="devicon-express-original"></i> EXPRESS.JS</span>
+                    <span className="skill-tag django"><i className="devicon-django-plain"></i> DJANGO</span>
+                    <span className="skill-tag flask"><i className="devicon-flask-original"></i> FLASK</span>
+                    <span className="skill-tag socketio"><i className="devicon-socketio-original"></i> SOCKET.IO</span>
+                    <span className="skill-tag jwt"><i className="devicon-jwt-plain"></i> JWT</span>
+                    <span className="skill-tag vercel"><i className="devicon-vercel-plain"></i> VERCEL</span>
+                  </div>
+                </div>
+                
+                <div className="skills-category">
+                  <h4 className="category-title">Databases</h4>
+                  <div className="category-skills">
+                    <span className="skill-tag mongodb"><i className="devicon-mongodb-plain"></i> MONGODB</span>
+                    <span className="skill-tag mysql"><i className="devicon-mysql-plain"></i> MYSQL</span>
+                    <span className="skill-tag postgres"><i className="devicon-postgresql-plain"></i> POSTGRES</span>
+                    <span className="skill-tag redis"><i className="devicon-redis-plain"></i> REDIS</span>
+                    <span className="skill-tag neo4j"><i className="devicon-neo4j-plain"></i> NEO4J</span>
+                    <span className="skill-tag supabase"><i className="devicon-supabase-plain"></i> SUPABASE</span>
+                  </div>
+                </div>
+                
+                <div className="skills-category">
+                  <h4 className="category-title">DevOps & Cloud</h4>
+                  <div className="category-skills">
+                    <span className="skill-tag aws"><i className="devicon-amazonwebservices-original"></i> AWS</span>
+                    <span className="skill-tag docker"><i className="devicon-docker-plain"></i> DOCKER</span>
+                    <span className="skill-tag kubernetes"><i className="devicon-kubernetes-plain"></i> KUBERNETES</span>
+                    <span className="skill-tag firebase"><i className="devicon-firebase-plain"></i> FIREBASE</span>
+                    <span className="skill-tag linux"><i className="devicon-linux-plain"></i> LINUX</span>
+                  </div>
+                </div>
               </div>
               <div className="contact-links">
                 <a href="https://github.com/aditya-a-chavan" className="contact-link" target="_blank" rel="noopener noreferrer">
@@ -612,20 +648,6 @@ function App() {
               </div>
             </div>
 
-            <div className="project-stats">
-              <div className="stat-box">
-                <div className="stat-value">2025</div>
-                <div className="stat-label">Project Started</div>
-              </div>
-              <div className="stat-box">
-                <div className="stat-value">Open Source</div>
-                <div className="stat-label">MIT License</div>
-              </div>
-              <div className="stat-box">
-                <div className="stat-value">under development</div>
-                <div className="stat-label">Current Version</div>
-              </div>
-            </div>
           </div>
 
           <div className="future-plans">

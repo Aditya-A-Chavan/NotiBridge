@@ -656,22 +656,46 @@ section {
 
 /* About Developer Section */
 .developer-profile {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 2rem;
   margin-bottom: 3rem;
 }
 
 .developer-info {
-  background-color: var(--card-light);
+  background-color: var(--card-dark);
   border-radius: var(--border-radius);
   padding: 2rem;
-  box-shadow: var(--shadow-light);
+  box-shadow: var(--shadow-dark);
+  width: 100%;
 }
 
-.dark-mode .developer-info {
-  background-color: var(--card-dark);
-  box-shadow: var(--shadow-dark);
+.developer-header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.developer-img-container {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 3px solid var(--primary-color);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.developer-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.developer-identity {
+  flex: 1;
 }
 
 .developer-name {
@@ -684,14 +708,14 @@ section {
   font-size: 1.1rem;
   font-weight: 500;
   color: var(--primary-color);
-  margin-bottom: 1.5rem;
+  margin-bottom: 0;
 }
 
 .developer-bio {
   font-size: 1rem;
   line-height: 1.6;
   margin-bottom: 1.5rem;
-  color: var(--text-light);
+  color: var(--text-dark);
 }
 
 .dark-mode .developer-bio {
@@ -700,22 +724,195 @@ section {
 
 .developer-skills {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
+  flex-direction: column;
+  gap: 1.5rem;
   margin-bottom: 1.5rem;
 }
 
+.skills-category {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.category-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--text-light);
+  position: relative;
+  padding-left: 1rem;
+}
+
+.category-title::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 1rem;
+  background: var(--primary-color);
+  border-radius: 2px;
+}
+
+.dark-mode .category-title {
+  color: var(--text-dark);
+}
+
+.category-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
 .skill-tag {
-  background-color: rgba(74, 108, 255, 0.1);
-  color: var(--primary-color);
-  padding: 0.5rem 1rem;
-  border-radius: 30px;
-  font-size: 0.85rem;
-  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.skill-tag:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.dark-mode .skill-tag:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.skill-tag i {
+  font-size: 1.1rem;
+}
+
+/* Language skills */
+.skill-tag.java {
+  background-color: #f44336;
+  color: white;
+}
+
+.skill-tag.python {
+  background-color: #3776AB;
+  color: white;
+}
+
+.skill-tag.javascript {
+  background-color: #F7DF1E;
+  color: #000;
+}
+
+.skill-tag.solidity {
+  background-color: #363636;
+  color: white;
+}
+
+/* Frameworks & Libraries */
+.skill-tag.spring {
+  background-color: #6DB33F;
+  color: white;
+}
+
+.skill-tag.nodejs {
+  background-color: #339933;
+  color: white;
+}
+
+.skill-tag.express {
+  background-color: #000000;
+  color: white;
+}
+
+.skill-tag.django {
+  background-color: #092E20;
+  color: white;
+}
+
+.skill-tag.flask {
+  background-color: #000000;
+  color: white;
+}
+
+.skill-tag.socketio {
+  background-color: #010101;
+  color: white;
+}
+
+.skill-tag.jwt {
+  background-color: #00B9F1;
+  color: white;
+}
+
+/* Databases */
+.skill-tag.mongodb {
+  background-color: #47A248;
+  color: white;
+}
+
+.skill-tag.mysql {
+  background-color: #4479A1;
+  color: white;
+}
+
+.skill-tag.postgres {
+  background-color: #336791;
+  color: white;
+}
+
+.skill-tag.redis {
+  background-color: #DC382D;
+  color: white;
+}
+
+.skill-tag.neo4j {
+  background-color: #008CC1;
+  color: white;
+}
+
+.skill-tag.supabase {
+  background-color: #3ECF8E;
+  color: white;
+}
+
+/* DevOps & Cloud */
+.skill-tag.aws {
+  background-color: #FF9900;
+  color: white;
+}
+
+.skill-tag.docker {
+  background-color: #2496ED;
+  color: white;
+}
+
+.skill-tag.kubernetes {
+  background-color: #326CE5;
+  color: white;
+}
+
+.skill-tag.firebase {
+  background-color: #FFCA28;
+  color: #111;
+}
+
+.skill-tag.linux {
+  background-color: #FCC624;
+  color: #000;
+}
+
+.skill-tag.vercel {
+  background-color: #000000;
+  color: white;
 }
 
 .dark-mode .skill-tag {
-  background-color: rgba(74, 108, 255, 0.2);
+  /* No transparency needed in dark mode since badges have their own backgrounds */
 }
 
 .contact-links {
@@ -1160,6 +1357,23 @@ section {
   
   .development-notice {
     margin: 1rem 0 1.5rem;
+  }
+  
+  .skills-category {
+    margin-bottom: 0.5rem;
+  }
+  
+  .category-skills {
+    gap: 0.5rem;
+  }
+  
+  .skill-tag {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.8rem;
+  }
+  
+  .skill-tag i {
+    font-size: 1rem;
   }
 }
 
