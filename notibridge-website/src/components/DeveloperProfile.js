@@ -57,13 +57,13 @@ const DeveloperProfile = () => {
             </div>
             
             <div className="developer-contact">
-              <a href="https://github.com/yourusername" className="social-link github">
+              <a href="https://github.com/aditya-a-chavan" className="social-link github">
                 <FaGithub /> GitHub
               </a>
-              <a href="https://linkedin.com/in/yourusername" className="social-link linkedin">
+              <a href="https://linkedin.com/in/aditya-a-chavan" className="social-link linkedin">
                 <FaLinkedin /> LinkedIn
               </a>
-              <a href="https://twitter.com/yourusername" className="social-link twitter">
+              <a href="https://twitter.com/aditya-a-chavan" className="social-link twitter">
                 <FaTwitter /> Twitter
               </a>
               <a href="mailto:your.email@example.com" className="social-link email">

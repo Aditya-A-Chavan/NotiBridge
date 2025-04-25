@@ -25,10 +25,10 @@ function Footer() {
             <div className="footer-column">
               <h4>Resources</h4>
               <ul>
-                <li><a href="https://github.com/yourusername/notibridge" target="_blank" rel="noopener noreferrer">GitHub</a></li>
-                <li><a href="https://github.com/yourusername/notibridge/issues" target="_blank" rel="noopener noreferrer">Issues</a></li>
-                <li><a href="https://github.com/yourusername/notibridge/wiki" target="_blank" rel="noopener noreferrer">Documentation</a></li>
-                <li><a href="https://github.com/yourusername/notibridge/releases" target="_blank" rel="noopener noreferrer">Releases</a></li>
+                <li><a href="https://github.com/aditya-a-chavan/notibridge" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+                <li><a href="https://github.com/aditya-a-chavan/notibridge/issues" target="_blank" rel="noopener noreferrer">Issues</a></li>
+                <li><a href="https://github.com/aditya-a-chavan/notibridge/wiki" target="_blank" rel="noopener noreferrer">Documentation</a></li>
+                <li><a href="https://github.com/aditya-a-chavan/notibridge/releases" target="_blank" rel="noopener noreferrer">Releases</a></li>
               </ul>
             </div>
           </div>
