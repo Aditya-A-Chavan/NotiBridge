@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/NotiBridge/static/css/main.74b4b1ff.css",
-    "main.js": "/NotiBridge/static/js/main.15271a62.js",
+    "main.js": "/NotiBridge/static/js/main.2fa07528.js",
     "static/js/453.834d2466.chunk.js": "/NotiBridge/static/js/453.834d2466.chunk.js",
     "index.html": "/NotiBridge/index.html",
     "main.74b4b1ff.css.map": "/NotiBridge/static/css/main.74b4b1ff.css.map",
-    "main.15271a62.js.map": "/NotiBridge/static/js/main.15271a62.js.map",
+    "main.2fa07528.js.map": "/NotiBridge/static/js/main.2fa07528.js.map",
     "453.834d2466.chunk.js.map": "/NotiBridge/static/js/453.834d2466.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.74b4b1ff.css",
-    "static/js/main.15271a62.js"
+    "static/js/main.2fa07528.js"
   ]
 }
