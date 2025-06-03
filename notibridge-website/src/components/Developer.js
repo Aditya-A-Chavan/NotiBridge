@@ -28,8 +28,8 @@ const Developer = () => {
           <div className="developer-skills">
             <span className="skill-tag">JavaScript</span>
             <span className="skill-tag">React</span>
-            <span className="skill-tag">Node.js</span>
-            <span className="skill-tag">Express</span>
+            {/* <span className="skill-tag">Node.js</span> */}
+            {/* <span className="skill-tag">Express</span> */}
             <span className="skill-tag">MongoDB</span>
             <span className="skill-tag">AWS</span>
             <span className="skill-tag">Docker</span>

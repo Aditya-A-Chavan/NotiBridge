@@ -594,7 +594,7 @@ function App() {
                     <span className="skill-tag java"><i className="devicon-java-plain"></i> JAVA</span>
                     <span className="skill-tag python"><i className="devicon-python-plain"></i> PYTHON</span>
                     <span className="skill-tag javascript"><i className="devicon-javascript-plain"></i> JAVASCRIPT</span>
-                    <span className="skill-tag solidity"><i className="devicon-solidity-plain"></i> SOLIDITY</span>
+                    {/* <span className="skill-tag solidity"><i className="devicon-solidity-plain"></i> SOLIDITY</span> */}
                   </div>
                 </div>
                 
@@ -602,8 +602,8 @@ function App() {
                   <h4 className="category-title">Frameworks & Libraries</h4>
                   <div className="category-skills">
                     <span className="skill-tag spring"><i className="devicon-spring-plain"></i> SPRING</span>
-                    <span className="skill-tag nodejs"><i className="devicon-nodejs-plain"></i> NODE.JS</span>
-                    <span className="skill-tag express"><i className="devicon-express-original"></i> EXPRESS.JS</span>
+                    {/* <span className="skill-tag nodejs"><i className="devicon-nodejs-plain"></i> NODE.JS</span> */}
+                    {/* <span className="skill-tag express"><i className="devicon-express-original"></i> EXPRESS.JS</span> */}
                     <span className="skill-tag django"><i className="devicon-django-plain"></i> DJANGO</span>
                     <span className="skill-tag flask"><i className="devicon-flask-original"></i> FLASK</span>
                     <span className="skill-tag socketio"><i className="devicon-socketio-original"></i> SOCKET.IO</span>
