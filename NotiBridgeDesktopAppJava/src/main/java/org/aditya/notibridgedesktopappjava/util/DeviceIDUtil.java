@@ -1,4 +1,4 @@
-package org.aditya.notibridgedesktopappjava.config;
+package org.aditya.notibridgedesktopappjava.util;
 
 import java.net.NetworkInterface;
 import java.net.SocketException;

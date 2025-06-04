@@ -45,7 +45,7 @@ public class StateManager {
             case PAIRED_DISCONNECTED:
                 return "Device is paired but disconnected";
             case UNPAIRED:
-                return "Device is not paired";
+                return "Device is not paired. Please scan the QRCODE displayed below using the NotiBridge Android app to initiate the pairing process";
             default:
                 return "Unknown state";
         }
