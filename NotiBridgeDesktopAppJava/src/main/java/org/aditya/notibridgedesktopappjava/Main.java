@@ -3,6 +3,7 @@ package org.aditya.notibridgedesktopappjava;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -13,6 +14,7 @@ import org.aditya.notibridgedesktopappjava.PairingState.PairingState;
 import org.aditya.notibridgedesktopappjava.pairing.CreateQRCode;
 import org.aditya.notibridgedesktopappjava.mdns.MDNSService;
 import org.aditya.notibridgedesktopappjava.network.SocketServer;
+import org.aditya.notibridgedesktopappjava.util.SecureFileStorageUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -105,6 +107,18 @@ public class Main extends Application {
         } else {
             qrCodeView.setVisible(false);
         }
+        Button unpairButton = new Button("Unpair");
+        unpairButton.setOnAction(event -> {
+            try {
+                SecureFileStorageUtil.clearData();
+                stateManager.setState(PairingState.UNPAIRED);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        root.getChildren().add(unpairButton);
+
+
 
         
         Scene scene = new Scene(root, 400, 400);

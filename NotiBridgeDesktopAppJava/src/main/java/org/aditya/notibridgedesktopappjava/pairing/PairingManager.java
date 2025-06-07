@@ -23,6 +23,8 @@ public class PairingManager {
             return false;
         }
 
+        
+
         try {
             savePairingInfo(phoneId, currentPairingKey);
             return true;
