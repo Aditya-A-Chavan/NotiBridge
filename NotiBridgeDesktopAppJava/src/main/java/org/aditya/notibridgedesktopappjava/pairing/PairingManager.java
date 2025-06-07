@@ -1,8 +1,6 @@
 package org.aditya.notibridgedesktopappjava.pairing;
 
 import org.json.JSONObject;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -26,23 +24,46 @@ public class PairingManager {
         }
 
         try {
-            savePairingInfo(phoneId);
+            savePairingInfo(phoneId, currentPairingKey);
             return true;
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
     }
 
-    private void savePairingInfo(String phoneId) throws IOException {
-        JSONObject pairingInfo = new JSONObject();
-        pairingInfo.put("phone_id", phoneId);
-        pairingInfo.put("device_id", DeviceIDUtil.getMACAddress());
-        pairingInfo.put("paired_at", System.currentTimeMillis());
 
-        try (FileWriter file = new FileWriter(PAIRING_FILE)) {
-            file.write(pairingInfo.toString(2));
-        }
+    //OLDAPPROACH:
+    // private void savePairingInfo(String phoneId) throws IOException {
+    //     JSONObject pairingInfo = new JSONObject();
+    //     pairingInfo.put("phone_id", phoneId);
+    //     pairingInfo.put("device_id", DeviceIDUtil.getMACAddress());
+    //     pairingInfo.put("paired_at", System.currentTimeMillis());
+
+    //     try (FileWriter file = new FileWriter(PAIRING_FILE)) {
+    //         file.write(pairingInfo.toString(2));
+    //     }
+    // }
+
+    //NEWAPPROACH (Encrypted):
+
+    private void savePairingInfo(String phoneId, String currentPairingKey) throws Exception {
+        
+            if(!SecureFileStorageUtil.isDataStored()){
+                String pairingInfo = "{ \"phoneId\": \"" + phoneId + "\", \"key\": \"" + currentPairingKey + "\", \"pairedAt\": " + System.currentTimeMillis() + " }";
+                SecureFileStorageUtil.saveEncryptedData(pairingInfo);
+                System.out.println("Pairing Data Stored");
+                SecureFileStorageUtil.loadDecryptedData();
+            }else{
+                SecureFileStorageUtil.clearData();
+                System.out.println("Pairing Data cleared");
+                String pairingInfo = "{ \"phoneId\": \"" + phoneId + "\", \"key\": \"" + currentPairingKey + "\", \"pairedAt\": " + System.currentTimeMillis() + " }";
+                SecureFileStorageUtil.saveEncryptedData(pairingInfo);
+                System.out.println(SecureFileStorageUtil.loadEncryptedData());
+                System.out.println("Pairing Data Stored");
+                System.out.println(SecureFileStorageUtil.loadDecryptedData());
+            }
+        
     }
 
     public String getPairedPhoneId() {

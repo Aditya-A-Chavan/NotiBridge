@@ -26,6 +26,18 @@ public class SecureFileStorageUtil {
         String encrypted = new String(Files.readAllBytes(path));
         return AESEncryption.decrypt(encrypted);
     }
+    
+    public static String loadEncryptedData() throws Exception {
+        Path path = Paths.get(FILE_PATH);
+
+        if(!Files.exists(path)){
+            return null;
+        }
+
+        String encrypted = new String(Files.readAllBytes(path));
+        return encrypted;
+    }
+
 
     public static boolean isDataStored() {
         return Files.exists(Paths.get(FILE_PATH));
