@@ -13,7 +13,6 @@ public class CreateQRCode {
     private static final String hostname = "localhost"; // This will be replaced with actual hostname
     
     private static String generatePairingKey() {
-        // Generate a random 6-digit pairing key
         return String.format("%06d", (int)(Math.random() * 1000000));
     }
     

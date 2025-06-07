@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import org.aditya.notibridgedesktopappjava.util.DeviceIDUtil;
-
+import org.aditya.notibridgedesktopappjava.util.SecureFileStorageUtil;
 public class PairingManager {
     private static final String PAIRING_FILE = "pairing.json";
     private String currentPairingKey;

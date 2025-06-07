@@ -15,12 +15,12 @@ public class MDNSService {
     private static final String SERVICE_TYPE = "_notibridge._tcp.local.";
     private static final int PORT = 5001;
     private JmDNS jmdns;
-    private String serviceName;
+    private static final String serviceName = DeviceIDUtil.getMACAddress();
 
-    public MDNSService() {
-        String deviceId = DeviceIDUtil.getMACAddress();
-        this.serviceName = deviceId + "." + SERVICE_TYPE;
-    }
+    // public MDNSService() {
+    //     String deviceId = DeviceIDUtil.getMACAddress();
+    //     this.serviceName = deviceId + "." + SERVICE_TYPE;
+    // }
 
     private String getLocalIpAddress() {
         try (DatagramSocket socket = new DatagramSocket()) {

@@ -6,6 +6,7 @@ import org.json.JSONObject;
 import org.aditya.notibridgedesktopappjava.pairing.PairingManager;
 import org.aditya.notibridgedesktopappjava.PairingState.StateManager;
 import org.aditya.notibridgedesktopappjava.PairingState.PairingState;
+import javafx.application.Platform;
 
 public class SocketServer {
     private static final int PORT = 5001;
@@ -70,7 +71,11 @@ public class SocketServer {
                         response.put("status", "SUCCESS");
                         response.put("message", "Device paired successfully");
                         out.println(response.toString());
-                        StateManager.getInstance().setState(PairingState.PAIRED_CONNECTED);
+                        
+                        // Update UI on JavaFX thread
+                        Platform.runLater(() -> {
+                            StateManager.getInstance().setState(PairingState.PAIRED_CONNECTED);
+                        });
                     } else {
                         JSONObject response = new JSONObject();
                         response.put("status", "ERROR");

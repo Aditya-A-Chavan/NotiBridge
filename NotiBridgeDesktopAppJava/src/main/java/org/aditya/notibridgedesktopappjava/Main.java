@@ -68,23 +68,25 @@ public class Main extends Application {
         
         // Set up state change listener
         stateManager.setStateChangeListener(newState -> {
-            stateLabel.setText(stateManager.getStateMessage());
-            if (newState == PairingState.UNPAIRED) {
-                try {
-                    CreateQRCode.generateQRCode();
-                    File qrCodeFile = new File(CreateQRCode.getQRCodePath());
-                    Image qrCodeImage = new Image(qrCodeFile.toURI().toString());
-                    qrCodeView.setImage(qrCodeImage);
-                    qrCodeView.setVisible(true);
-                    mdnsService.startBroadcasting();
-                } catch (IOException | WriterException e) {
-                    e.printStackTrace();
+            Platform.runLater(() -> {
+                stateLabel.setText(stateManager.getStateMessage());
+                if (newState == PairingState.UNPAIRED) {
+                    try {
+                        CreateQRCode.generateQRCode();
+                        File qrCodeFile = new File(CreateQRCode.getQRCodePath());
+                        Image qrCodeImage = new Image(qrCodeFile.toURI().toString());
+                        qrCodeView.setImage(qrCodeImage);
+                        qrCodeView.setVisible(true);
+                        mdnsService.startBroadcasting();
+                    } catch (IOException | WriterException e) {
+                        e.printStackTrace();
+                        qrCodeView.setVisible(false);
+                    }
+                } else {
                     qrCodeView.setVisible(false);
+                    mdnsService.stopBroadcasting();
                 }
-            } else {
-                qrCodeView.setVisible(false);
-                mdnsService.stopBroadcasting();
-            }
+            });
         });
 
         // Initial state setup
