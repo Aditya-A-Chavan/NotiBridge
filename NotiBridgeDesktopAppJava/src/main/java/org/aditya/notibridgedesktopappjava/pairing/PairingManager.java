@@ -1,13 +1,9 @@
 package org.aditya.notibridgedesktopappjava.pairing;
 
-import org.json.JSONObject;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import org.aditya.notibridgedesktopappjava.util.DeviceIDUtil;
 import org.aditya.notibridgedesktopappjava.util.SecureFileStorageUtil;
 public class PairingManager {
-    private static final String PAIRING_FILE = "pairing.json";
+    // private static final String PAIRING_FILE = "pairing.json";
     private String currentPairingKey;
 
     public PairingManager() {
@@ -68,14 +64,25 @@ public class PairingManager {
         
     }
 
-    public String getPairedPhoneId() {
-        try {
-            if (Files.exists(Paths.get(PAIRING_FILE))) {
-                String content = new String(Files.readAllBytes(Paths.get(PAIRING_FILE)));
-                JSONObject pairingInfo = new JSONObject(content);
-                return pairingInfo.getString("phone_id");
+    // public String getPairedPhoneId() {
+    //     try {
+    //         if (Files.exists(Paths.get(PAIRING_FILE))) {
+    //             String content = new String(Files.readAllBytes(Paths.get(PAIRING_FILE)));
+    //             JSONObject pairingInfo = new JSONObject(content);
+    //             return pairingInfo.getString("phone_id");
+    //         }
+    //     } catch (IOException e) {
+    //         e.printStackTrace();
+    //     }
+    //     return null;
+    // }
+
+    public String getPairedDetails(){
+        try{
+            if(SecureFileStorageUtil.isDataStored()){
+                return SecureFileStorageUtil.loadDecryptedData();  
             }
-        } catch (IOException e) {
+        }catch (Exception e){
             e.printStackTrace();
         }
         return null;
