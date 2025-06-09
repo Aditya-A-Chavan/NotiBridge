@@ -7,6 +7,7 @@ import org.aditya.notibridgedesktopappjava.pairing.PairingManager;
 import org.aditya.notibridgedesktopappjava.PairingState.StateManager;
 import org.aditya.notibridgedesktopappjava.PairingState.PairingState;
 import javafx.application.Platform;
+import org.aditya.notibridgedesktopappjava.util.SecureFileStorageUtil;
 
 public class SocketServer {
     private static final int PORT = 5001;
@@ -60,28 +61,46 @@ public class SocketServer {
             if (message != null) {
                 System.out.println("Received data: " + message);
                 JSONObject request = new JSONObject(message);
-                
-                if ("PAIR".equals(request.getString("request"))) {
-                    String deviceId = request.getString("device_id");
-                    String phoneId = request.getString("phone_id");
-                    String pairingKey = request.getString("pairing_key");
+                String deviceId = request.getString("device_id");
+                String phoneId = request.getString("phone_id");
+                String pairingKey = request.getString("pairing_key");
+                String requestType = request.getString("request");
 
-                    if (pairingManager.verifyPairing(deviceId, phoneId, pairingKey)) {
+                
+                if ("PAIR".equals(requestType)) {
+                    
+
+                    if (pairingManager.pairDevice(deviceId, phoneId, pairingKey)) {
                         JSONObject response = new JSONObject();
                         response.put("status", "SUCCESS");
                         response.put("message", "Device paired successfully");
                         out.println(response.toString());
                         
-                        // Update UI on JavaFX thread
-                        Platform.runLater(() -> {
-                            StateManager.getInstance().setState(PairingState.PAIRED_CONNECTED);
-                        });
+                        
                     } else {
                         JSONObject response = new JSONObject();
                         response.put("status", "ERROR");
                         response.put("message", "Invalid pairing key");
                         out.println(response.toString());
+                    } 
+                    
+                }
+                else if ("UNPAIR".equals(requestType)){
+                    
+                    if(!pairingManager.unpairDevice(deviceId, phoneId, pairingKey)){
+                        JSONObject response = new JSONObject();
+                        response.put("status", "ERROR");
+                        response.put("message", "Error occured");
+                        out.println(response.toString());
+
+                    } else {
+                        JSONObject response = new JSONObject();
+                        response.put("status", "SUCCESS");
+                        response.put("message", "Device Unpaired Sucessfully");
+                        out.println(response.toString());
+
                     }
+
                 }
             }
         } catch (Exception e) {

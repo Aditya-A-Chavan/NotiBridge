@@ -37,6 +37,7 @@ public class MDNSService {
     public void startBroadcasting() {
         try {
             String localIp = getLocalIpAddress();
+            // jmdns.unregisterAllServices();
             
             jmdns = JmDNS.create(InetAddress.getByName(localIp));
             
@@ -66,9 +67,10 @@ public class MDNSService {
         if (jmdns != null) {
             try {
                 jmdns.unregisterAllServices();
+                Thread.sleep(1000); 
                 jmdns.close();
                 System.out.println("mDNS service stopped");
-            } catch (IOException e) {
+            } catch (IOException | InterruptedException e) {
                 System.err.println("Error stopping mDNS service: " + e.getMessage());
                 e.printStackTrace();
             }

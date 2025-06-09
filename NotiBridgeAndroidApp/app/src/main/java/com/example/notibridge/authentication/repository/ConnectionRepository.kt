@@ -20,7 +20,7 @@ class ConnectionRepository(
 //    data class AuthResult(val success: Boolean, val errorMessage: String = "")
 
 
-    suspend fun authenticate(phoneId: String, deviceId: String, currhostIp: String?): Boolean {
+    suspend fun authenticate(phoneId: String, deviceId: String, currhostIp: String?, pairingKey: String?): Boolean {
         return withContext(Dispatchers.IO) {
 
             Log.d("ConnectionRepository.authenticate", "Attempting authentication with $deviceId")
@@ -48,7 +48,8 @@ class ConnectionRepository(
             val requestData = mapOf(
                 "request" to "AUTHENTICATE",
                 "phone_id" to phoneId,
-                "device_id" to deviceId
+                "device_id" to deviceId,
+                "pairing_key" to pairingKey,
             )
 
 

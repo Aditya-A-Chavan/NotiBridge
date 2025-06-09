@@ -86,13 +86,14 @@ class PairingViewModel(
                 val deviceId = prefsManager.getDeviceId()
                 val phoneId = secureStore.getPhoneId()
                 val currHostIp = prefsManager.getHostIp()
+                val pairingKey = secureStore.getPairingKey()
 
                 if(deviceId == null || phoneId == null){
                     Log.e("Pairing View Model.attemptReconnection", "Unable to fetch hostname, deviceid, phoneid")
                     return@launch
                 }
 
-                val result = connectionRepository.authenticate(phoneId, deviceId, currHostIp)
+                val result = connectionRepository.authenticate(phoneId, deviceId, currHostIp, pairingKey)
 
                 if(result){
                     _pairingState.value = PairingState.PAIRED_CONNECTED
@@ -106,6 +107,7 @@ class PairingViewModel(
             viewModelScope.launch {
                 val phoneId = secureStore.getPhoneId()
                 val deviceId = prefsManager.getDeviceId()
+                val pairingKey = secureStore.getPairingKey()
                 Log.d("PairingViewModel", "Unpairing: phoneId=$phoneId, deviceId=$deviceId")
 
                 if(deviceId == null || phoneId == null){
@@ -113,7 +115,7 @@ class PairingViewModel(
                     return@launch
                 }
 
-                val result = pairingRepository.unpairDevice(phoneId)
+                val result = pairingRepository.unpairDevice(deviceId, phoneId, pairingKey)
 
                 if(result.success){
                     secureStore.clearData()

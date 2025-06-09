@@ -21,7 +21,7 @@ class NetworkManager {
     private val TIMEOUT = 5000  // 5 seconds timeout
     private val gson = Gson()
 
-    suspend fun sendRequest(hostIp: String, requestData: Map<String, String>): Map<String, Any?> {
+    suspend fun sendRequest(hostIp: String, requestData: Map<String, String?>): Map<String, Any?> {
         Log.d("NetworkManager.sendRequest", "Network Manager's send req called on $hostIp")
         return withContext(Dispatchers.IO) {
             val socket = Socket()

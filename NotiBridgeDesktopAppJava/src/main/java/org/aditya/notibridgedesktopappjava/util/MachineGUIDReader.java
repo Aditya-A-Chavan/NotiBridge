@@ -34,7 +34,6 @@ public class MachineGUIDReader {
             }
         }catch(Exception e){
             System.out.println(e);
-            System.out.println("Hence mGUID set to MAC (default): " + DeviceIDUtil.getMACAddress());
         }
         return null;
     }

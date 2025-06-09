@@ -99,13 +99,15 @@ class PairingRepository(
         }
     }
 
-    suspend fun unpairDevice(phoneId: String): PairingResult{
+    suspend fun unpairDevice(deviceId: String, phoneId: String, pairingKey: String?): PairingResult{
         return withContext(Dispatchers.IO){
 //            val hostname = prefsManager.getHostname() ?: return@withContext PairingResult(false, "No Paired Device to Unpair")
             val hostIp = prefsManager.getHostIp() ?: return@withContext PairingResult(false, "HostIp not found")
             val requestData = mapOf(
                 "request" to "UNPAIR",
-                "phone_id" to phoneId
+                "phone_id" to phoneId,
+                "device_id" to deviceId,
+                "pairing_key" to pairingKey
             )
 
             val response = networkManager.sendRequest(hostIp, requestData)

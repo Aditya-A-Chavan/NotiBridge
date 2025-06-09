@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.google.zxing.WriterException;
 
@@ -45,11 +46,16 @@ public class Main extends Application {
     private MDNSService mdnsService;
     private SocketServer socketServer;
     private ExecutorService executorService;
+    private final AtomicBoolean isShuttingDown = new AtomicBoolean(false);
 
     @Override
     public void start(Stage primaryStage) {
-        // Add shutdown hook for Ctrl+C
-        Runtime.getRuntime().addShutdownHook(new Thread(this::cleanup));
+        // Add shutdown hook for Ctrl+C and other termination signals
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            if (!isShuttingDown.get()) {
+                cleanup();
+            }
+        }));
 
         stateManager = StateManager.getInstance();
         mdnsService = new MDNSService();
@@ -118,8 +124,6 @@ public class Main extends Application {
         });
         root.getChildren().add(unpairButton);
 
-
-
         
         Scene scene = new Scene(root, 400, 400);
         primaryStage.setTitle("NotiBridge Desktop");
@@ -128,38 +132,56 @@ public class Main extends Application {
 
         // Handle window close button
         primaryStage.setOnCloseRequest(event -> {
-            event.consume(); 
-            cleanup();
-            Platform.exit();
+            event.consume();
+            Platform.runLater(() -> {
+                cleanup();
+                Platform.exit();
+                System.exit(0);
+            });
         });
     }
 
-    private void cleanup() {
-        System.out.println("Cleaning up resources...");
-        
-        // Stop mDNS service
-        if (mdnsService != null) {
-            mdnsService.stopBroadcasting();
-        }
-
-        // Stop socket server
-        if (socketServer != null) {
-            socketServer.stop();
-        }
-
-        if (executorService != null) {
-            executorService.shutdown();
-            try {
-                if (!executorService.awaitTermination(5, TimeUnit.SECONDS)) {
-                    executorService.shutdownNow();
+    private synchronized void cleanup() {
+        if (isShuttingDown.compareAndSet(false, true)) {
+            System.out.println("Cleaning up resources...");
+            
+            // Stop mDNS service
+            if (mdnsService != null) {
+                try {
+                    mdnsService.stopBroadcasting();
+                    System.out.println("mDNS service stopped successfully");
+                } catch (Exception e) {
+                    System.err.println("Error stopping mDNS service: " + e.getMessage());
+                    e.printStackTrace();
                 }
-            } catch (InterruptedException e) {
-                executorService.shutdownNow();
-                Thread.currentThread().interrupt();
             }
-        }
 
-        System.out.println("Cleanup completed");
+            // Stop socket server
+            if (socketServer != null) {
+                try {
+                    socketServer.stop();
+                    System.out.println("Socket server stopped successfully");
+                } catch (Exception e) {
+                    System.err.println("Error stopping socket server: " + e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+
+            if (executorService != null) {
+                executorService.shutdown();
+                try {
+                    if (!executorService.awaitTermination(5, TimeUnit.SECONDS)) {
+                        executorService.shutdownNow();
+                    }
+                    System.out.println("Executor service stopped successfully");
+                } catch (InterruptedException e) {
+                    executorService.shutdownNow();
+                    Thread.currentThread().interrupt();
+                }
+            }
+
+            System.out.println("Cleanup completed");
+        }
     }
 
     @Override

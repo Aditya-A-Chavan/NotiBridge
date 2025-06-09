@@ -2,6 +2,12 @@ package org.aditya.notibridgedesktopappjava.pairing;
 
 import org.aditya.notibridgedesktopappjava.util.DeviceIDUtil;
 import org.aditya.notibridgedesktopappjava.util.SecureFileStorageUtil;
+import org.junit.internal.matchers.Each;
+import org.aditya.notibridgedesktopappjava.PairingState.StateManager;
+import org.aditya.notibridgedesktopappjava.PairingState.PairingState;
+import javafx.application.Platform;
+import org.json.*;
+
 public class PairingManager {
     // private static final String PAIRING_FILE = "pairing.json";
     private String currentPairingKey;
@@ -15,17 +21,50 @@ public class PairingManager {
             return false;
         }
 
-        if (!pairingKey.equals(currentPairingKey)) {
-            return false;
+        // if (!pairingKey.equals(currentPairingKey)) {
+        //     return false;
+        // }
+
+        if (!SecureFileStorageUtil.isDataStored()){
+            if(!pairingKey.equals(currentPairingKey)){
+                return false;
+            } else {
+                return true;
+            }
+        }else {
+            try{
+            String pairedDeviceData = SecureFileStorageUtil.loadDecryptedData();
+            JSONObject pairedDeviceDataJSON = new JSONObject(pairedDeviceData);
+            String key = pairedDeviceDataJSON.getString("key");
+
+            if (!pairingKey.equals(key)){
+                return false;
+            }
+            else {
+                return true;
+            }
+
+            } catch (Exception e){
+                e.printStackTrace();
+                return false;
+            }
         }
 
-        
+    }
 
-        try {
-            savePairingInfo(phoneId, currentPairingKey);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
+    public boolean pairDevice(String deviceId, String phoneId, String pairingKey) {
+        if (verifyPairing(deviceId, phoneId, pairingKey)){
+            try{
+                savePairingInfo(phoneId, pairingKey);
+                Platform.runLater(() -> {
+                    StateManager.getInstance().setState(PairingState.PAIRED_CONNECTED);
+                });
+                return true;
+            } catch (Exception e){
+                e.printStackTrace();
+                return false;
+            }
+        } else {
             return false;
         }
     }
@@ -86,5 +125,25 @@ public class PairingManager {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public boolean unpairDevice(String deviceId, String phoneId, String pairingKey){
+        try{
+            if(!SecureFileStorageUtil.isDataStored()){
+                System.err.println("No Device is Paired");
+                return false;
+            }
+            else{
+                verifyPairing(deviceId, phoneId, pairingKey);
+                SecureFileStorageUtil.clearData();
+                Platform.runLater(() -> {
+                    StateManager.getInstance().setState(PairingState.PAIRED_CONNECTED);
+                });
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 } 
