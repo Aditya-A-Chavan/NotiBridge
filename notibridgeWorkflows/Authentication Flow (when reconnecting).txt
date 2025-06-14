@@ -1,0 +1,7 @@
+[App] --(Check stored credentials)--> [Start mDNS Discovery]
+    |
+    v
+[Find device IP] --> [NetworkManager.sendRequest] --(AUTHENTICATE request)--> [Desktop]
+    |
+    v
+[If Success] --> [Update IP if changed] --> [Establish Socket Connection]

@@ -1,0 +1,10 @@
+[App] --(Scan QR)--> [Get deviceId & pairingKey]
+    |
+    v
+[Start mDNS Discovery] --(Find device)--> [Get device IP]
+    |
+    v
+[NetworkManager.sendRequest] --(PAIR request)--> [Desktop]
+    |
+    v
+[If Success] --> [Save credentials] --> [Establish Socket Connection]

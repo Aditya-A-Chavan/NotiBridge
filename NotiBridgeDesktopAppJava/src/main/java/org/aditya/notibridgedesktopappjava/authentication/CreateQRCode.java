@@ -1,4 +1,4 @@
-package org.aditya.notibridgedesktopappjava.pairing;
+package org.aditya.notibridgedesktopappjava.authentication;
 import java.io.IOException;
 import org.json.JSONObject;
 

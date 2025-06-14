@@ -1,4 +1,4 @@
-package org.aditya.notibridgedesktopappjava.pairing;
+package org.aditya.notibridgedesktopappjava.authentication;
 
 import org.aditya.notibridgedesktopappjava.util.DeviceIDUtil;
 import org.aditya.notibridgedesktopappjava.util.SecureFileStorageUtil;
@@ -137,11 +137,33 @@ public class PairingManager {
                 verifyPairing(deviceId, phoneId, pairingKey);
                 SecureFileStorageUtil.clearData();
                 Platform.runLater(() -> {
-                    StateManager.getInstance().setState(PairingState.PAIRED_CONNECTED);
+                    StateManager.getInstance().setState(PairingState.UNPAIRED);
                 });
                 return true;
             }
         } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean authenticatePairedDevice(String deviceId, String phoneId, String pairingKey){
+        try{
+            if(!SecureFileStorageUtil.isDataStored()){
+                System.err.println("No device paired but recieved authentication request, if it is you, please force pair device again");
+                return false;
+            }
+           else{
+                if(verifyPairing(deviceId, phoneId, pairingKey)){
+                    Platform.runLater(() -> {
+                        StateManager.getInstance().setState(PairingState.PAIRED_CONNECTED);
+                    });
+                    return true;
+                }else{
+                    return false;
+                }
+            }
+        }catch (Exception e){
             e.printStackTrace();
             return false;
         }

@@ -1,0 +1,6 @@
+[SocketConnectionManager]
+    |
+    |-- Maintains persistent socket connection
+    |-- Handles connection state (CONNECTED/DISCONNECTED/CONNECTING)
+    |-- Listens for incoming messages
+    |-- Provides sendMessage() for outgoing data

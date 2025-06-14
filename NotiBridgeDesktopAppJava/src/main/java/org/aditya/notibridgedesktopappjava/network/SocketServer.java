@@ -3,8 +3,8 @@ package org.aditya.notibridgedesktopappjava.network;
 import java.io.*;
 import java.net.*;
 import org.json.JSONObject;
-import org.aditya.notibridgedesktopappjava.pairing.PairingManager;
 import org.aditya.notibridgedesktopappjava.PairingState.StateManager;
+import org.aditya.notibridgedesktopappjava.authentication.PairingManager;
 import org.aditya.notibridgedesktopappjava.PairingState.PairingState;
 import javafx.application.Platform;
 import org.aditya.notibridgedesktopappjava.util.SecureFileStorageUtil;
@@ -14,9 +14,11 @@ public class SocketServer {
     private ServerSocket serverSocket;
     private boolean running;
     private PairingManager pairingManager;
+    private PersistentConnectionManager persistentConnectionManager;
 
     public SocketServer() {
         this.pairingManager = new PairingManager();
+        this.persistentConnectionManager = new PersistentConnectionManager();
     }
 
     private boolean isPortAvailable(int port) {
@@ -65,42 +67,45 @@ public class SocketServer {
                 String phoneId = request.getString("phone_id");
                 String pairingKey = request.getString("pairing_key");
                 String requestType = request.getString("request");
-
                 
                 if ("PAIR".equals(requestType)) {
-                    
-
                     if (pairingManager.pairDevice(deviceId, phoneId, pairingKey)) {
                         JSONObject response = new JSONObject();
                         response.put("status", "SUCCESS");
                         response.put("message", "Device paired successfully");
+                        response.put("persistent_port", PersistentConnectionManager.PERSISTENT_PORT);
                         out.println(response.toString());
                         
-                        
+                        // Start persistent connection server
+                        new Thread(() -> persistentConnectionManager.start()).start();
                     } else {
                         JSONObject response = new JSONObject();
                         response.put("status", "ERROR");
                         response.put("message", "Invalid pairing key");
                         out.println(response.toString());
                     } 
-                    
                 }
-                else if ("UNPAIR".equals(requestType)){
-                    
-                    if(!pairingManager.unpairDevice(deviceId, phoneId, pairingKey)){
+                else if ("UNPAIR".equals(requestType)) {
+                    if(!pairingManager.unpairDevice(deviceId, phoneId, pairingKey)) {
                         JSONObject response = new JSONObject();
                         response.put("status", "ERROR");
-                        response.put("message", "Error occured");
+                        response.put("message", "Error occurred");
                         out.println(response.toString());
-
                     } else {
                         JSONObject response = new JSONObject();
                         response.put("status", "SUCCESS");
-                        response.put("message", "Device Unpaired Sucessfully");
+                        response.put("message", "Device Unpaired Successfully");
                         out.println(response.toString());
-
+                        
+                        // Stop persistent connection server
+                        persistentConnectionManager.stop();
                     }
-
+                }
+                else {
+                    JSONObject response = new JSONObject();
+                    response.put("status", "ERROR");
+                    response.put("message", "unknown request type");
+                    out.println(response.toString());
                 }
             }
         } catch (Exception e) {
@@ -125,5 +130,6 @@ public class SocketServer {
                 e.printStackTrace();
             }
         }
+        persistentConnectionManager.stop();
     }
 } 

@@ -1,0 +1,14 @@
+[NotificationListener] --(New notification)--> [NotificationService]
+    |
+    v
+[ConnectionRepository.sendNotification]
+    |
+    |-- Check socket connection state
+    |   |
+    |   |-- If CONNECTED: Send via socket
+    |   |
+    |   |-- If DISCONNECTED: 
+    |       |-- Start mDNS Discovery
+    |       |-- Authenticate
+    |       |-- Re-establish socket
+    |       |-- Send notification

@@ -1,0 +1,11 @@
+[PairingViewModel States]
+    |
+    |-- UNPAIRED: No device paired
+    |-- PAIRED_DISCONNECTED: Paired but no active connection
+    |-- PAIRED_CONNECTED: Paired and connected
+
+[SocketConnectionManager States]
+    |
+    |-- CONNECTED: Socket is active
+    |-- DISCONNECTED: No socket connection
+    |-- CONNECTING: Attempting to connect

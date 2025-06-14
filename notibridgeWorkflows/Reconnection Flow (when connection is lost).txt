@@ -1,0 +1,13 @@
+[Socket Disconnect Detected]
+    |
+    v
+[Check Pairing State]
+    |
+    |-- If PAIRED_CONNECTED:
+    |   |-- Start mDNS Discovery
+    |   |-- Find device IP
+    |   |-- Authenticate
+    |   |-- Re-establish socket
+    |
+    |-- If PAIRED_DISCONNECTED/UNPAIRED:
+        |-- Do nothing (wait for user action)
