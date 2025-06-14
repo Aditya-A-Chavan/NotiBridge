@@ -158,6 +158,7 @@ public class PairingManager {
                     Platform.runLater(() -> {
                         StateManager.getInstance().setState(PairingState.PAIRED_CONNECTED);
                     });
+                    System.out.println("authenticatePairedDevice, verified");
                     return true;
                 }else{
                     return false;

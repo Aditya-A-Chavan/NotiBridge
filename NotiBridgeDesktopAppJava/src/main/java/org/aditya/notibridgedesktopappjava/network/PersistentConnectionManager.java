@@ -12,6 +12,7 @@ public class PersistentConnectionManager {
     private ServerSocket serverSocket;
     private boolean running;
     private MDNSService mdnsService;
+    private Socket currentClientSocket;
 
     public PersistentConnectionManager() {
         this.mdnsService = new MDNSService();
@@ -26,20 +27,22 @@ public class PersistentConnectionManager {
 
             while (running) {
                 System.out.println("Waiting for persistent connection...");
-                Socket clientSocket = serverSocket.accept();
-                System.out.println("Persistent connection established with " + clientSocket.getInetAddress().getHostAddress());
+                currentClientSocket = serverSocket.accept();
+                System.out.println("Persistent connection established with " + currentClientSocket.getInetAddress().getHostAddress());
 
                 // Set state to connected
                 Platform.runLater(() -> {
                     StateManager.getInstance().setDeviceConnected(true);
                 });
 
-                handlePersistentConnection(clientSocket);
+                handlePersistentConnection(currentClientSocket);
             }
         } catch (IOException e) {
-            System.err.println("Error in persistent connection server: " + e.getMessage());
-            e.printStackTrace();
-            handleConnectionFailure();
+            if (running) {  // Only handle as error if we're still supposed to be running
+                System.err.println("Error in persistent connection server: " + e.getMessage());
+                e.printStackTrace();
+                handleConnectionFailure();
+            }
         }
     }
 
@@ -48,17 +51,21 @@ public class PersistentConnectionManager {
              PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true)) {
             
             String message;
-            while ((message = in.readLine()) != null) {
+            while (running && (message = in.readLine()) != null) {
                 System.out.println("Received persistent message: " + message);
                 // TODO: Implement message handling logic
             }
         } catch (IOException e) {
-            System.err.println("Error handling persistent connection: " + e.getMessage());
-            e.printStackTrace();
+            if (running) {  // Only handle as error if we're still supposed to be running
+                System.err.println("Error handling persistent connection: " + e.getMessage());
+                e.printStackTrace();
+            }
         } finally {
             try {
                 clientSocket.close();
-                handleConnectionFailure();
+                if (running) {  // Only handle as failure if we're still supposed to be running
+                    handleConnectionFailure();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -74,6 +81,17 @@ public class PersistentConnectionManager {
 
     public void stop() {
         running = false;
+        
+        // Close current client connection if exists
+        if (currentClientSocket != null && !currentClientSocket.isClosed()) {
+            try {
+                currentClientSocket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // Close server socket
         if (serverSocket != null && !serverSocket.isClosed()) {
             try {
                 serverSocket.close();
@@ -81,5 +99,10 @@ public class PersistentConnectionManager {
                 e.printStackTrace();
             }
         }
+
+        // Start mDNS broadcasting
+        mdnsService.startBroadcasting();
+        
+        System.out.println("Persistent connection server stopped");
     }
 } 

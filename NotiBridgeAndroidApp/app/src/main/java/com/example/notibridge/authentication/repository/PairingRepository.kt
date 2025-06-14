@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.notibridge.authentication.storage.PrefsManager
 import com.example.notibridge.authentication.storage.SecureStore
 import com.example.notibridge.network.NetworkManager
+import com.example.notibridge.network.SocketConnectionManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.UUID
@@ -18,6 +19,8 @@ class PairingRepository(
     private val networkManager: NetworkManager,
     private val mdnsService: MdnsService
 ){
+    private val socketConnectionManager = SocketConnectionManager()
+
 
     //Return Class for whenever Pairing Repository is called
     data class PairingResult(val success: Boolean, val errorMessage: String = "")
@@ -92,6 +95,11 @@ class PairingRepository(
             prefsManager.saveHostIp(hostIp)
 
             Log.d("Pairing repository.pairWithDevice", "Pairing successful for deviceId: $deviceId")
+            val connected = socketConnectionManager.connect(hostIp)
+            if (!connected) {
+                Log.e("ConnectionRepository.authenticate", "Failed to establish persistent connection")
+                return false
+            }
             true
         } else {
             Log.e("Pairing repository.pairWithDevice", "Pairing failed for deviceId: $deviceId")

@@ -25,6 +25,7 @@ import com.example.notibridge.services.ForegroundService
 import android.provider.Settings
 import  android.content.Intent
 import android.app.AlertDialog
+import com.example.notibridge.network.SocketConnectionManager
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -73,7 +74,7 @@ class MainActivity : ComponentActivity() {
                     SocketConnectionManager.ConnectionState.CONNECTED -> {
                         // Update pairing state to CONNECTED if we were in DISCONNECTED state
                         if (pairingViewModel.pairingState.value == PairingViewModel.PairingState.PAIRED_DISCONNECTED) {
-                            pairingViewModel.pairingState.value = PairingViewModel.PairingState.PAIRED_CONNECTED
+                            pairingViewModel.updatePairingState(PairingViewModel.PairingState.PAIRED_CONNECTED)
                         }
                     }
                     else -> {}

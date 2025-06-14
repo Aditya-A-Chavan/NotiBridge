@@ -63,6 +63,10 @@ class PairingViewModel(
             }
         }
 
+        fun updatePairingState(newState: PairingState) {
+            _pairingState.value = newState
+        }
+
         fun pairDevice(pairingKey: String, deviceId: String) {
             viewModelScope.launch{
                 val phoneId = pairingRepository.generatePhoneId()

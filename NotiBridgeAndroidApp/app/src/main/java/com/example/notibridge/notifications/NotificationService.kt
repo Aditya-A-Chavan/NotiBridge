@@ -16,7 +16,6 @@ import kotlinx.coroutines.launch
 
 class NotificationService : Service() {
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-    private lateinit var notificationListener: NotificationListener
     private lateinit var connectionRepository: ConnectionRepository
 
     override fun onCreate() {
@@ -28,35 +27,25 @@ class NotificationService : Service() {
         val mdnsService = MdnsService(this)
         
         connectionRepository = ConnectionRepository(prefsManager, secureStore, networkManager, mdnsService)
-        notificationListener = NotificationListener { notification ->
-            serviceScope.launch {
-                try {
-                    val notificationData = mapOf(
-                        "type" to "NOTIFICATION",
-                        "package_name" to notification.packageName,
-                        "title" to notification.title,
-                        "text" to notification.text,
-                        "timestamp" to notification.timestamp
-                    )
-                    
-                    connectionRepository.sendNotification(notificationData)
-                } catch (e: Exception) {
-                    Log.e("NotificationService", "Error sending notification: ${e.message}")
-                }
-            }
-        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        notificationListener.startListening()
+        // The NotificationListener service will be started by the system
+        // when the user grants notification access permission
         return START_STICKY
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        notificationListener.stopListening()
         connectionRepository.disconnect()
     }
 
     override fun onBind(intent: Intent?): IBinder? = null
+
+    companion object {
+        fun startService(context: android.content.Context) {
+            val intent = Intent(context, NotificationService::class.java)
+            context.startService(intent)
+        }
+    }
 }

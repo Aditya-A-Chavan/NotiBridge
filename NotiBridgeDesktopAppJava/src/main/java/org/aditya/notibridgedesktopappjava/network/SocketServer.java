@@ -50,8 +50,10 @@ public class SocketServer {
                 handleClient(clientSocket);
             }
         } catch (IOException e) {
-            System.err.println("Error starting socket server: " + e.getMessage());
-            e.printStackTrace();
+            if (running) {  // Only handle as error if we're still supposed to be running
+                System.err.println("Error starting socket server: " + e.getMessage());
+                e.printStackTrace();
+            }
         }
     }
 
@@ -70,14 +72,15 @@ public class SocketServer {
                 
                 if ("PAIR".equals(requestType)) {
                     if (pairingManager.pairDevice(deviceId, phoneId, pairingKey)) {
+                        new Thread(() -> persistentConnectionManager.start()).start();
                         JSONObject response = new JSONObject();
                         response.put("status", "SUCCESS");
                         response.put("message", "Device paired successfully");
                         response.put("persistent_port", PersistentConnectionManager.PERSISTENT_PORT);
+                        
                         out.println(response.toString());
                         
-                        // Start persistent connection server
-                        new Thread(() -> persistentConnectionManager.start()).start();
+                        
                     } else {
                         JSONObject response = new JSONObject();
                         response.put("status", "ERROR");
@@ -99,6 +102,22 @@ public class SocketServer {
                         
                         // Stop persistent connection server
                         persistentConnectionManager.stop();
+                    }
+                }
+                else if ("AUTHENTICATE".equals(requestType)) {
+                    if(!pairingManager.authenticatePairedDevice(deviceId, phoneId, pairingKey)){
+                        JSONObject response = new JSONObject();
+                        response.put("status", "ERROR");
+                        response.put("message", "Error occurred");
+                        out.println(response.toString());
+                    } else{
+                        new Thread(() -> persistentConnectionManager.start()).start();
+                        
+                        JSONObject response = new JSONObject();
+                        response.put("status", "SUCCESS");
+                        response.put("message", "Device Unpaired Successfully");
+                        out.println(response.toString());
+                        
                     }
                 }
                 else {
@@ -123,6 +142,8 @@ public class SocketServer {
 
     public void stop() {
         running = false;
+        
+        // Close server socket
         if (serverSocket != null && !serverSocket.isClosed()) {
             try {
                 serverSocket.close();
@@ -130,6 +151,10 @@ public class SocketServer {
                 e.printStackTrace();
             }
         }
+
+        // Stop persistent connection manager
         persistentConnectionManager.stop();
+        
+        System.out.println("Socket server stopped");
     }
 } 

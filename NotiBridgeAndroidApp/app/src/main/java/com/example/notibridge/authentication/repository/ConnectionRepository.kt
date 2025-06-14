@@ -77,28 +77,29 @@ class ConnectionRepository(
         return withContext(Dispatchers.IO) {
             val connectionState = socketConnectionManager.connectionState.first()
             
-            if (connectionState == SocketConnectionManager.ConnectionState.CONNECTED) {
-                socketConnectionManager.sendMessage(notificationData)
-            } else {
-                // If not connected, try to reconnect
-                val hostIp = prefsManager.getHostIp()
-                val deviceId = prefsManager.getDeviceId()
-                val phoneId = secureStore.getPhoneId()
-                val pairingKey = secureStore.getPairingKey()
-
-                if (hostIp == null || deviceId == null || phoneId == null) {
-                    Log.e("ConnectionRepository.sendNotification", "Missing connection data")
-                    return@withContext false
-                }
-
-                // Attempt to reconnect
-                val reconnected = authenticate(phoneId, deviceId, hostIp, pairingKey)
-                if (reconnected) {
-                    socketConnectionManager.sendMessage(notificationData)
-                } else {
-                    false
-                }
-            }
+//            if (connectionState == SocketConnectionManager.ConnectionState.CONNECTED) {
+//
+//            } else {
+//                // If not connected, try to reconnect
+//                val hostIp = prefsManager.getHostIp()
+//                val deviceId = prefsManager.getDeviceId()
+//                val phoneId = secureStore.getPhoneId()
+//                val pairingKey = secureStore.getPairingKey()
+//
+//                if (hostIp == null || deviceId == null || phoneId == null) {
+//                    Log.e("ConnectionRepository.sendNotification", "Missing connection data")
+//                    return@withContext false
+//                }
+//
+//                // Attempt to reconnect
+//                val reconnected = authenticate(phoneId, deviceId, hostIp, pairingKey)
+//                if (reconnected) {
+//                    socketConnectionManager.sendMessage(notificationData)
+//                } else {
+//                    false
+//                }
+//            }
+            socketConnectionManager.sendMessage(notificationData)
         }
     }
 

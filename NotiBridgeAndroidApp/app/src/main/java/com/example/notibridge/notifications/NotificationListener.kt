@@ -5,13 +5,30 @@ import android.content.Context
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.util.Log
+import com.example.notibridge.authentication.repository.ConnectionRepository
+import com.example.notibridge.authentication.storage.PrefsManager
+import com.example.notibridge.authentication.storage.SecureStore
+import com.example.notibridge.network.NetworkManager
+import com.example.notibridge.network.mdns.MdnsService
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 
 class NotificationListener : NotificationListenerService() {
-    private var onNotificationReceived: ((NotificationData) -> Unit)? = null
+    private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private lateinit var connectionRepository: ConnectionRepository
 
     override fun onCreate() {
         super.onCreate()
         Log.d("NotificationListener", "Service created")
+        
+        val prefsManager = PrefsManager(this)
+        val secureStore = SecureStore(this)
+        val networkManager = NetworkManager()
+        val mdnsService = MdnsService(this)
+        
+        connectionRepository = ConnectionRepository(prefsManager, secureStore, networkManager, mdnsService)
     }
 
     override fun onNotificationPosted(sbn: StatusBarNotification) {
@@ -37,34 +54,26 @@ class NotificationListener : NotificationListenerService() {
         val ignoredPackages = listOf("com.google.android.gm", "com.android.systemui")
         if (ignoredPackages.contains(packageName)) return
 
-        // Create notification data object
-        val notificationData = NotificationData(
-            packageName = packageName,
-            title = title,
-            text = text,
-            timestamp = sbn.postTime
-        )
-
-        // Notify listener
-        onNotificationReceived?.invoke(notificationData)
+        // Send notification through socket connection
+        serviceScope.launch {
+            try {
+                val notificationData = mapOf(
+                    "type" to "NOTIFICATION",
+                    "package_name" to packageName,
+                    "title" to title,
+                    "text" to text,
+                    "timestamp" to sbn.postTime
+                )
+                
+                connectionRepository.sendNotification(notificationData)
+            } catch (e: Exception) {
+                Log.e("NotificationListener", "Error sending notification: ${e.message}")
+            }
+        }
     }
 
-    fun startListening() {
-        Log.d("NotificationListener", "Starting notification listener")
+    override fun onDestroy() {
+        super.onDestroy()
+        connectionRepository.disconnect()
     }
-
-    fun stopListening() {
-        Log.d("NotificationListener", "Stopping notification listener")
-    }
-
-    fun setOnNotificationReceivedListener(listener: (NotificationData) -> Unit) {
-        onNotificationReceived = listener
-    }
-
-    data class NotificationData(
-        val packageName: String,
-        val title: String,
-        val text: String,
-        val timestamp: Long
-    )
 }
