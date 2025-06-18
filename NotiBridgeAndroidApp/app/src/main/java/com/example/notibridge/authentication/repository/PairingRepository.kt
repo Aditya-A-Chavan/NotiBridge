@@ -88,7 +88,7 @@ class PairingRepository(
 
         val response = networkManager.sendRequest(hostIp, requestData)
 
-        return if (response["status"] == "SUCCESS") {
+        if (response["status"] == "SUCCESS") {
             secureStore.savePhoneId(phoneId)
             secureStore.savePairingKey(pairingKey)
             prefsManager.saveDeviceId(deviceId)
@@ -96,14 +96,17 @@ class PairingRepository(
 
             Log.d("Pairing repository.pairWithDevice", "Pairing successful for deviceId: $deviceId")
             val connected = socketConnectionManager.connect(hostIp)
+
             if (!connected) {
-                Log.e("ConnectionRepository.authenticate", "Failed to establish persistent connection")
+                Log.e("ConnectionRepository.pairWithDevice", "Failed to establish persistent connection")
                 return false
             }
-            true
-        } else {
+            Log.d("ConnectionRepository.pairWithDevice", "established persistent connection")
+            return true
+        }
+        else {
             Log.e("Pairing repository.pairWithDevice", "Pairing failed for deviceId: $deviceId")
-            false
+            return false
         }
     }
 
