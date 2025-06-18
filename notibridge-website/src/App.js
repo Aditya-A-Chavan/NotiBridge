@@ -102,7 +102,7 @@ function App() {
             </div>
             
             <div className="development-notice">
-              <p>Sorry, I'm still making it! Target to complete: <span className="highlight-date">May 2025 </span>Hover over the buttons to see progress.</p>
+              <p>Sorry, I'm still making it! Target to complete: <span className="highlight-date">June End</span>Hover over the buttons to see progress.</p>
             </div>
             
             <div className="buttons-row">
@@ -126,28 +126,28 @@ function App() {
                     <div className="progress-item">
                       <div className="progress-label">Core Workflows</div>
                       <div className="progress-bar">
-                        <div className="progress-fill" style={{width: "85%"}}></div>
+                        <div className="progress-fill" style={{width: "90%"}}></div>
                       </div>
                       <div className="progress-status done">Ready</div>
                     </div>
                     <div className="progress-item">
                       <div className="progress-label">WebSocket Server</div>
                       <div className="progress-bar">
-                        <div className="progress-fill" style={{width: "70%"}}></div>
+                        <div className="progress-fill" style={{width: "85%"}}></div>
                       </div>
-                      <div className="progress-status in-progress">In Progress</div>
+                      <div className="progress-status in-progress">functional</div>
                     </div>
                     <div className="progress-item">
                       <div className="progress-label">UI Development</div>
                       <div className="progress-bar">
-                        <div className="progress-fill" style={{width: "40%"}}></div>
+                        <div className="progress-fill" style={{width: "30%"}}></div>
                       </div>
-                      <div className="progress-status in-progress">In Progress</div>
+                      <div className="progress-status in-progress">unplanned</div>
                     </div>
                     <div className="progress-item">
                       <div className="progress-label">Final Testing</div>
                       <div className="progress-bar">
-                        <div className="progress-fill" style={{width: "20%"}}></div>
+                        <div className="progress-fill" style={{width: "50%"}}></div>
                       </div>
                       <div className="progress-status pending">Pending</div>
                     </div>
@@ -185,7 +185,7 @@ function App() {
                       <div className="progress-bar">
                         <div className="progress-fill" style={{width: "90%"}}></div>
                       </div>
-                      <div className="progress-status done">Working</div>
+                      <div className="progress-status done">functional</div>
                     </div>
                     <div className="progress-item">
                       <div className="progress-label">UI Implementation</div>

@@ -64,7 +64,7 @@ class ConnectionRepository(
                     Log.e("ConnectionRepository.authenticate", "Failed to establish persistent connection")
                     return@withContext false
                 }
-
+                Log.d("ConnectionRepository.authenticate", "established persistent connection")
                 true
             } else {
                 Log.e("ConnectionRepository.authenticate", "Authentication Unsuccessful")
